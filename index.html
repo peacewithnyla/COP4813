@@ -3,82 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COP4813 - Hello World</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 720px;
-            margin: 40px auto;
-            padding: 0 20px;
-            line-height: 1.6;
-            color: #24292e;
-            background-color: #f6f8fa;
-        }
-        header {
-            border-bottom: 2px solid #e1e4e8;
-            padding-bottom: 12px;
-            margin-bottom: 24px;
-        }
-        h1 {
-            color: #0366d6;
-            margin: 0;
-        }
-        main {
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid #e1e4e8;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 6px;
-            margin: 16px 0;
-            display: block;
-        }
-        a {
-            color: #0366d6;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        footer {
-            border-top: 1px solid #e1e4e8;
-            margin-top: 32px;
-            padding-top: 16px;
-            font-size: 0.95em;
-            color: #586069;
-            text-align: center;
-        }
-    </style>
+    <meta name="description" content="Personal portfolio and COP4813 Course Site">
+    <title>Nyla Webb | Home</title>
+    
+    <link rel="stylesheet" href="Theme.css">
 </head>
 <body>
 
     <header>
-        <h1>Hello World!</h1>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
     </header>
 
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            
+            <li><a href="#">My Classes</a>
+                <ul>
+                    <li><a href="index.html">COP4813</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
     <main>
-        <section>
-            <h2>About This Page</h2>
-            <p>Welcome! This is a simple hello world site for COP4813.</p>
+        <section id="about">
+            <h2>Welcome to my COP4813 Site!</h2>
+            <img src="avatar.jpg" alt="A graphic of a strawberry representing personal style" class="profile-img">
+            
+            <p>The primary purpose of this site is to demonstrate my web programming capabilities for the COP4813 class. It serves as an ongoing digital portfolio where I will showcase my coursework, projects, and understanding of HTML and CSS.</p>
         </section>
 
-        <section>
-            <h2>Featured Image</h2>
-            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=700&auto=format&fit=crop&q=80" alt="Laptop displaying code on a desk">
-        </section>
-
-        <section>
-            <h2>Helpful Links</h2>
-            <p>Check out <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> to see more developer projects and resources.</p>
+        <section id="resume">
+            <h2>Professional Overview</h2>
+            <p>I am an Information Technology student working towards my Bachelor of Science degree. I have a strong professional background in systems support, distribution operations, and customer service intake.</p>
+            
+            <h3>Technical Skills</h3>
+            <ul>
+                <li>Relational Database Design & Entity-Relationship Modeling</li>
+                <li>SQL Query Writing (MySQL Workbench, SQLite)</li>
+                <li>Hardware troubleshooting & virtual machine configuration</li>
+                <li>HTML5 & CSS3</li>
+            </ul>
         </section>
     </main>
 
     <footer>
-        <p>Created by Nyla Webb</p>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
     </footer>
 
 </body>
