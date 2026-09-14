@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assignment 3 - Contact & Information Form</title>
-  <!-- Linked to your theme.css file -->
-  <link rel="stylesheet" href="theme.css" />
+  <!-- Linked to your Theme.css file -->
+  <link rel="stylesheet" href="Theme.css" />
 
   <style>
     /* Global box-sizing */
@@ -118,6 +118,8 @@
     }
 
     .state-zip-row > div {
+      display: flex;
+      flex-direction: column;
       min-width: 0;
       width: 100%;
       box-sizing: border-box;
@@ -263,14 +265,34 @@
 <body>
 
   <header>
-    <h1>Welcome to My Website</h1>
+    <h1>Nyla Webb</h1>
+    <p>Information Technology Portfolio</p>
   </header>
 
-  <nav>
+  <nav aria-label="Main Navigation">
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="assignment2.html">Assignment 2</a></li>
-      <li><a href="assignment3.html">Assignment 3</a></li>
+      
+      <li><a href="#">My Classes</a>
+        <ul>
+          <li><a href="index.html">COP4813</a></li>
+        </ul>
+      </li>
+      
+      <li><a href="#">My Assignments</a>
+        <ul>
+          <li><a href="assignment1.html">Assignment 1</a></li>
+          <li><a href="index.html">Assignment 2</a></li>
+          <li><a href="assignment3.html">Assignment 3</a></li>
+        </ul>
+      </li>
+      
+      <li><a href="#">Nyla's Sites</a>
+        <ul>
+          <li><a href="https://www.spotify.com" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+          <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        </ul>
+      </li>
     </ul>
   </nav>
 
@@ -391,7 +413,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2026 My Website | Assignment 3</p>
+    <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
   </footer>
 
   <script>
