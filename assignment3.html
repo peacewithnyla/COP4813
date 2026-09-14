@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignment 3 - Contact & Information Form</title>
+  <style>
+    :root {
+      --primary-pink: #f7cad0;
+      --deep-pink: #d8839b;
+      --soft-sage: #ccd5ae;
+      --deep-sage: #606c38;
+      --bg-cream: #fefae0;
+      --card-bg: #ffffff;
+      --text-dark: #283618;
+      --error-color: #b00020;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: var(--card-bg);
+      max-width: 680px;
+      width: 100%;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(96, 108, 56, 0.12);
+      border: 2px solid var(--soft-sage);
+    }
+
+    h1 {
+      color: var(--deep-pink);
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 1.8rem;
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--deep-sage);
+      margin-bottom: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 0.35rem;
+      color: var(--deep-sage);
+    }
+
+    input, select, textarea {
+      padding: 0.75rem;
+      border: 1.5px solid var(--soft-sage);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #fafbfa;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--deep-pink);
+      box-shadow: 0 0 0 3px rgba(247, 202, 208, 0.45);
+      background-color: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error-msg {
+      color: var(--error-color);
+      font-size: 0.78rem;
+      margin-top: 0.3rem;
+      min-height: 1rem;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-submit {
+      background-color: var(--deep-sage);
+      color: #ffffff;
+    }
+
+    .btn-submit:hover {
+      background-color: #4c562b;
+    }
+
+    .btn-confirm {
+      background-color: var(--deep-pink);
+      color: #ffffff;
+    }
+
+    .btn-confirm:hover {
+      background-color: #bf6f85;
+    }
+
+    .btn-secondary {
+      background-color: var(--primary-pink);
+      color: var(--text-dark);
+    }
+
+    .btn-secondary:hover {
+      background-color: #f2b3bc;
+    }
+
+    /* Confirmation Box View */
+    #confirmation-card {
+      display: none;
+    }
+
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+
+    .review-table th, .review-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .review-table th {
+      color: var(--deep-sage);
+      width: 35%;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .full-width {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- FORM VIEW -->
+    <div id="form-view">
+      <h1>Inquiry & Details</h1>
+      <p class="subtitle">Please fill out all fields below to verify and send your details.</p>
+
+      <form id="contactForm" novalidate>
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" placeholder="Jane" />
+            <span class="error-msg" id="err-firstName"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" placeholder="Doe" />
+            <span class="error-msg" id="err-lastName"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="streetAddress">Street Address *</label>
+            <input type="text" id="streetAddress" placeholder="123 Blossom Lane" />
+            <span class="error-msg" id="err-streetAddress"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" placeholder="Orlando" />
+            <span class="error-msg" id="err-city"></span>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; gap: 0.5rem;">
+              <div style="flex: 1;">
+                <label for="state">State *</label>
+                <input type="text" id="state" maxlength="2" placeholder="FL" style="text-transform: uppercase;" />
+              </div>
+              <div style="flex: 1.5;">
+                <label for="zipCode">Zip Code *</label>
+                <input type="text" id="zipCode" maxlength="10" placeholder="32801" />
+              </div>
+            </div>
+            <span class="error-msg" id="err-stateZip"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number *</label>
+            <input type="tel" id="phoneNumber" placeholder="(555) 000-0000" maxlength="14" />
+            <span class="error-msg" id="err-phoneNumber"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="emailAddress">Email Address *</label>
+            <input type="email" id="emailAddress" placeholder="jane.doe@example.com" />
+            <span class="error-msg" id="err-emailAddress"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="birthDate">Birth Date *</label>
+            <input type="date" id="birthDate" />
+            <span class="error-msg" id="err-birthDate"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="captchaAnswer" id="captchaLabel">Security Check *</label>
+            <input type="number" id="captchaAnswer" placeholder="Answer" />
+            <span class="error-msg" id="err-captcha"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="message">Message *</label>
+            <textarea id="message" placeholder="Type your message here..."></textarea>
+            <span class="error-msg" id="err-message"></span>
+          </div>
+
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-submit">Review Submission</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- CONFIRMATION VIEW -->
+    <div id="confirmation-card">
+      <h1>Confirm Your Details</h1>
+      <p class="subtitle">Please check that all the entered details are accurate before sending.</p>
+      
+      <table class="review-table">
+        <tbody>
+          <tr><th>Full Name</th><td id="rev-name"></td></tr>
+          <tr><th>Mailing Address</th><td id="rev-address"></td></tr>
+          <tr><th>Phone Number</th><td id="rev-phone"></td></tr>
+          <tr><th>Email Address</th><td id="rev-email"></td></tr>
+          <tr><th>Birth Date</th><td id="rev-birthdate"></td></tr>
+          <tr><th>Message</th><td id="rev-message"></td></tr>
+        </tbody>
+      </table>
+
+      <div class="btn-row">
+        <button type="button" id="btnEdit" class="btn-secondary">Make Changes</button>
+        <button type="button" id="btnFinalSubmit" class="btn-confirm">Confirm & Send Email</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Security Math Challenge ---
+    let num1 = Math.floor(Math.random() * 9) + 1;
+    let num2 = Math.floor(Math.random() * 9) + 1;
+    let expectedSum = num1 + num2;
+    document.getElementById('captchaLabel').textContent = `Security Check: What is ${num1} + ${num2}? *`;
+
+    // --- Phone Number Input Mask: (000)000-0000 ---
+    const phoneInput = document.getElementById('phoneNumber');
+    phoneInput.addEventListener('input', function(e) {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      if (!x[2]) {
+        e.target.value = x[1] ? `(${x[1]}` : '';
+      } else {
+        e.target.value = `(${x[1]})${x[2]}` + (x[3] ? `-${x[3]}` : '');
+      }
+    });
+
+    // --- Validation Helper ---
+    function setErr(id, msg) {
+      document.getElementById(id).textContent = msg;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error-msg').forEach(el => el.textContent = '');
+    }
+
+    // --- Form Submission Handling ---
+    const form = document.getElementById('contactForm');
+    const formView = document.getElementById('form-view');
+    const confirmView = document.getElementById('confirmation-card');
+
+    let formDataPayload = {};
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      clearErrors();
+      let isValid = true;
+
+      // First & Last Name
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      if (!firstName) { setErr('err-firstName', 'First name is required.'); isValid = false; }
+      if (!lastName) { setErr('err-lastName', 'Last name is required.'); isValid = false; }
+
+      // Street Address & City
+      const address = document.getElementById('streetAddress').value.trim();
+      const city = document.getElementById('city').value.trim();
+      if (!address || address.length < 5) {
+        setErr('err-streetAddress', 'Please enter a valid street address.');
+        isValid = false;
+      }
+      if (!city) {
+        setErr('err-city', 'City is required.');
+        isValid = false;
+      }
+
+      // State (2 letters) & Zip Code (5 or 5+4)
+      const state = document.getElementById('state').value.trim().toUpperCase();
+      const zip = document.getElementById('zipCode').value.trim();
+      const stateRegex = /^[A-Z]{2}$/;
+      const zipRegex = /^\d{5}(-\d{4})?$/;
+
+      if (!stateRegex.test(state) || !zipRegex.test(zip)) {
+        setErr('err-stateZip', 'Enter 2-letter state & 5-digit zip code.');
+        isValid = false;
+      }
+
+      // Phone Number: Must match exactly (000)000-0000
+      const phoneVal = phoneInput.value.trim();
+      const phoneRegex = /^\(\d{3}\)\d{3}-\d{4}$/;
+      if (!phoneRegex.test(phoneVal)) {
+        setErr('err-phoneNumber', 'Enter 10-digit phone as (000)000-0000.');
+        isValid = false;
+      }
+
+      // Email Address
+      const email = document.getElementById('emailAddress').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setErr('err-emailAddress', 'Enter a valid email address.');
+        isValid = false;
+      }
+
+      // Birth Date (Valid calendar date, not in future, realistic age)
+      const bdateVal = document.getElementById('birthDate').value;
+      if (!bdateVal) {
+        setErr('err-birthDate', 'Birth date is required.');
+        isValid = false;
+      } else {
+        const selectedDate = new Date(bdateVal + 'T00:00:00');
+        const now = new Date();
+        const minDate = new Date();
+        minDate.setFullYear(now.getFullYear() - 115);
+
+        if (selectedDate > now) {
+          setErr('err-birthDate', 'Birth date cannot be in the future.');
+          isValid = false;
+        } else if (selectedDate < minDate) {
+          setErr('err-birthDate', 'Please enter a valid date of birth.');
+          isValid = false;
+        }
+      }
+
+      // Anti-Bot / Security Math Question
+      const captchaInput = document.getElementById('captchaAnswer').value.trim();
+      if (parseInt(captchaInput, 10) !== expectedSum) {
+        setErr('err-captcha', 'Incorrect security answer.');
+        isValid = false;
+      }
+
+      // Message Area
+      const message = document.getElementById('message').value.trim();
+      if (!message) {
+        setErr('err-message', 'Message cannot be left blank.');
+        isValid = false;
+      }
+
+      if (isValid) {
+        formDataPayload = {
+          fullName: `${firstName} ${lastName}`,
+          fullAddress: `${address}, ${city}, ${state} ${zip}`,
+          phone: phoneVal,
+          email: email,
+          birthDate: bdateVal,
+          message: message
+        };
+
+        // Populate Confirmation Card
+        document.getElementById('rev-name').textContent = formDataPayload.fullName;
+        document.getElementById('rev-address').textContent = formDataPayload.fullAddress;
+        document.getElementById('rev-phone').textContent = formDataPayload.phone;
+        document.getElementById('rev-email').textContent = formDataPayload.email;
+        document.getElementById('rev-birthdate').textContent = formDataPayload.birthDate;
+        document.getElementById('rev-message').textContent = formDataPayload.message;
+
+        // Switch to Review View
+        formView.style.display = 'none';
+        confirmView.style.display = 'block';
+      }
+    });
+
+    // "Make Changes" Button
+    document.getElementById('btnEdit').addEventListener('click', function() {
+      confirmView.style.display = 'none';
+      formView.style.display = 'block';
+    });
+
+    // "Confirm & Send Email" using mailto:
+    document.getElementById('btnFinalSubmit').addEventListener('click', function() {
+      // NOTE: Replace YOUR_EMAIL@example.com with your actual school/personal email
+      const recipientEmail = "YOUR_EMAIL@example.com";
+      const subject = encodeURIComponent("Assignment 3 Form Submission - " + formDataPayload.fullName);
+      
+      const bodyContent = 
+        `Name: ${formDataPayload.fullName}\n` +
+        `Address: ${formDataPayload.fullAddress}\n` +
+        `Phone: ${formDataPayload.phone}\n` +
+        `Email: ${formDataPayload.email}\n` +
+        `Birth Date: ${formDataPayload.birthDate}\n\n` +
+        `Message:\n${formDataPayload.message}`;
+
+      const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(bodyContent)}`;
+      window.location.href = mailtoUrl;
+    });
+  </script>
+</body>
+</html>
