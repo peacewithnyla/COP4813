@@ -7,12 +7,12 @@
   <style>
     :root {
       --primary-pink: #f7cad0;
-      --deep-pink: #d8839b;
+      --deep-pink: #c85376;
+      --heading-dark: #6e1635; /* Darker berry for high-contrast visibility */
       --soft-sage: #ccd5ae;
-      --deep-sage: #606c38;
-      --bg-cream: #fefae0;
-      --card-bg: #ffffff;
-      --text-dark: #283618;
+      --deep-sage: #455220; /* Darker forest sage for labels & subheaders */
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text-dark: #1b240e;
       --error-color: #b00020;
     }
 
@@ -24,9 +24,12 @@
     }
 
     body {
-      background-color: var(--bg-cream);
+      /* Background image from your COP folder with an overlay for readability */
+      background: linear-gradient(rgba(254, 250, 224, 0.55), rgba(247, 202, 208, 0.55)),
+                  url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: var(--text-dark);
-      padding: 2rem 1rem;
+      padding: 2.5rem 1rem;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -35,24 +38,28 @@
 
     .container {
       background: var(--card-bg);
+      backdrop-filter: blur(4px);
       max-width: 680px;
       width: 100%;
       padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(96, 108, 56, 0.12);
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
       border: 2px solid var(--soft-sage);
     }
 
     h1 {
-      color: var(--deep-pink);
+      color: var(--heading-dark);
       text-align: center;
       margin-bottom: 0.5rem;
-      font-size: 1.8rem;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     p.subtitle {
       text-align: center;
       font-size: 0.95rem;
+      font-weight: 600;
       color: var(--deep-sage);
       margin-bottom: 2rem;
     }
@@ -73,8 +80,8 @@
     }
 
     label {
-      font-weight: 600;
-      font-size: 0.88rem;
+      font-weight: 700;
+      font-size: 0.9rem;
       margin-bottom: 0.35rem;
       color: var(--deep-sage);
     }
@@ -84,7 +91,7 @@
       border: 1.5px solid var(--soft-sage);
       border-radius: 8px;
       font-size: 0.95rem;
-      background-color: #fafbfa;
+      background-color: #ffffff;
       color: var(--text-dark);
       outline: none;
       transition: all 0.2s ease-in-out;
@@ -92,7 +99,7 @@
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--deep-pink);
-      box-shadow: 0 0 0 3px rgba(247, 202, 208, 0.45);
+      box-shadow: 0 0 0 3px rgba(200, 83, 118, 0.25);
       background-color: #fff;
     }
 
@@ -101,9 +108,46 @@
       min-height: 100px;
     }
 
+    /* 6-Character Captcha Box */
+    .captcha-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .captcha-badge {
+      background: linear-gradient(135deg, #f7cad0, #ccd5ae);
+      color: var(--heading-dark);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 5px;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      user-select: none;
+      border: 1px dashed var(--deep-sage);
+      display: inline-block;
+    }
+
+    .btn-refresh {
+      background: none;
+      border: none;
+      color: var(--deep-sage);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      line-height: 1;
+    }
+
+    .btn-refresh:hover {
+      color: var(--heading-dark);
+    }
+
     .error-msg {
       color: var(--error-color);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
+      font-weight: 600;
       margin-top: 0.3rem;
       min-height: 1rem;
     }
@@ -114,18 +158,18 @@
       margin-top: 1.5rem;
     }
 
-    button {
+    button.action-btn {
       flex: 1;
       padding: 0.9rem 1.2rem;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: transform 0.15s ease, background-color 0.2s ease;
     }
 
-    button:hover {
+    button.action-btn:hover {
       transform: translateY(-1px);
     }
 
@@ -135,7 +179,7 @@
     }
 
     .btn-submit:hover {
-      background-color: #4c562b;
+      background-color: #313b14;
     }
 
     .btn-confirm {
@@ -144,19 +188,19 @@
     }
 
     .btn-confirm:hover {
-      background-color: #bf6f85;
+      background-color: #a83d5d;
     }
 
     .btn-secondary {
       background-color: var(--primary-pink);
-      color: var(--text-dark);
+      color: var(--heading-dark);
     }
 
     .btn-secondary:hover {
-      background-color: #f2b3bc;
+      background-color: #f1b4bd;
     }
 
-    /* Confirmation Box View */
+    /* Confirmation Card View */
     #confirmation-card {
       display: none;
     }
@@ -169,7 +213,7 @@
 
     .review-table th, .review-table td {
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid #e5e5e5;
       text-align: left;
       font-size: 0.95rem;
     }
@@ -177,7 +221,7 @@
     .review-table th {
       color: var(--deep-sage);
       width: 35%;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     @media (max-width: 600px) {
@@ -196,32 +240,32 @@
     <!-- FORM VIEW -->
     <div id="form-view">
       <h1>Inquiry & Details</h1>
-      <p class="subtitle">Please fill out all fields below to verify and send your details.</p>
+      <p class="subtitle">Please fill out all fields below to verify and submit your information.</p>
 
       <form id="contactForm" novalidate>
         <div class="form-grid">
           
           <div class="form-group">
             <label for="firstName">First Name *</label>
-            <input type="text" id="firstName" placeholder="Jane" />
+            <input type="text" id="firstName" placeholder="First" />
             <span class="error-msg" id="err-firstName"></span>
           </div>
 
           <div class="form-group">
             <label for="lastName">Last Name *</label>
-            <input type="text" id="lastName" placeholder="Doe" />
+            <input type="text" id="lastName" placeholder="Last" />
             <span class="error-msg" id="err-lastName"></span>
           </div>
 
           <div class="form-group full-width">
             <label for="streetAddress">Street Address *</label>
-            <input type="text" id="streetAddress" placeholder="123 Blossom Lane" />
+            <input type="text" id="streetAddress" placeholder="Street Address" />
             <span class="error-msg" id="err-streetAddress"></span>
           </div>
 
           <div class="form-group">
             <label for="city">City *</label>
-            <input type="text" id="city" placeholder="Orlando" />
+            <input type="text" id="city" placeholder="City" />
             <span class="error-msg" id="err-city"></span>
           </div>
 
@@ -229,11 +273,11 @@
             <div style="display: flex; gap: 0.5rem;">
               <div style="flex: 1;">
                 <label for="state">State *</label>
-                <input type="text" id="state" maxlength="2" placeholder="FL" style="text-transform: uppercase;" />
+                <input type="text" id="state" maxlength="2" placeholder="State" style="text-transform: uppercase;" />
               </div>
               <div style="flex: 1.5;">
                 <label for="zipCode">Zip Code *</label>
-                <input type="text" id="zipCode" maxlength="10" placeholder="32801" />
+                <input type="text" id="zipCode" maxlength="10" placeholder="Zip Code" />
               </div>
             </div>
             <span class="error-msg" id="err-stateZip"></span>
@@ -241,13 +285,13 @@
 
           <div class="form-group">
             <label for="phoneNumber">Phone Number *</label>
-            <input type="tel" id="phoneNumber" placeholder="(555) 000-0000" maxlength="14" />
+            <input type="tel" id="phoneNumber" placeholder="Phone Number" maxlength="14" />
             <span class="error-msg" id="err-phoneNumber"></span>
           </div>
 
           <div class="form-group">
             <label for="emailAddress">Email Address *</label>
-            <input type="email" id="emailAddress" placeholder="jane.doe@example.com" />
+            <input type="email" id="emailAddress" placeholder="Email Address" />
             <span class="error-msg" id="err-emailAddress"></span>
           </div>
 
@@ -258,21 +302,25 @@
           </div>
 
           <div class="form-group">
-            <label for="captchaAnswer" id="captchaLabel">Security Check *</label>
-            <input type="number" id="captchaAnswer" placeholder="Answer" />
+            <label>Verify You're Human *</label>
+            <div class="captcha-container">
+              <span id="captchaCode" class="captcha-badge">------</span>
+              <button type="button" class="btn-refresh" id="refreshCaptcha" title="Get new code">&#x21bb;</button>
+            </div>
+            <input type="text" id="captchaAnswer" placeholder="Type 6 Characters" maxlength="6" />
             <span class="error-msg" id="err-captcha"></span>
           </div>
 
           <div class="form-group full-width">
             <label for="message">Message *</label>
-            <textarea id="message" placeholder="Type your message here..."></textarea>
+            <textarea id="message" placeholder="Message"></textarea>
             <span class="error-msg" id="err-message"></span>
           </div>
 
         </div>
 
         <div class="btn-row">
-          <button type="submit" class="btn-submit">Review Submission</button>
+          <button type="submit" class="action-btn btn-submit">Review Submission</button>
         </div>
       </form>
     </div>
@@ -294,18 +342,28 @@
       </table>
 
       <div class="btn-row">
-        <button type="button" id="btnEdit" class="btn-secondary">Make Changes</button>
-        <button type="button" id="btnFinalSubmit" class="btn-confirm">Confirm & Send Email</button>
+        <button type="button" id="btnEdit" class="action-btn btn-secondary">Make Changes</button>
+        <button type="button" id="btnFinalSubmit" class="action-btn btn-confirm">Confirm & Send Email</button>
       </div>
     </div>
   </div>
 
   <script>
-    // --- Security Math Challenge ---
-    let num1 = Math.floor(Math.random() * 9) + 1;
-    let num2 = Math.floor(Math.random() * 9) + 1;
-    let expectedSum = num1 + num2;
-    document.getElementById('captchaLabel').textContent = `Security Check: What is ${num1} + ${num2}? *`;
+    // --- Random 6-Character Captcha Generator (Letters & Digits) ---
+    let currentCaptcha = "";
+    function generateCaptcha() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+      let result = "";
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      currentCaptcha = result;
+      document.getElementById('captchaCode').textContent = currentCaptcha;
+    }
+
+    // Initialize captcha & refresh button
+    generateCaptcha();
+    document.getElementById('refreshCaptcha').addEventListener('click', generateCaptcha);
 
     // --- Phone Number Input Mask: (000)000-0000 ---
     const phoneInput = document.getElementById('phoneNumber');
@@ -318,7 +376,7 @@
       }
     });
 
-    // --- Validation Helper ---
+    // --- Validation Helpers ---
     function setErr(id, msg) {
       document.getElementById(id).textContent = msg;
     }
@@ -327,7 +385,7 @@
       document.querySelectorAll('.error-msg').forEach(el => el.textContent = '');
     }
 
-    // --- Form Submission Handling ---
+    // --- Form Submit Handling ---
     const form = document.getElementById('contactForm');
     const formView = document.getElementById('form-view');
     const confirmView = document.getElementById('confirmation-card');
@@ -342,8 +400,8 @@
       // First & Last Name
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
-      if (!firstName) { setErr('err-firstName', 'First name is required.'); isValid = false; }
-      if (!lastName) { setErr('err-lastName', 'Last name is required.'); isValid = false; }
+      if (!firstName) { setErr('err-firstName', 'First name cannot be blank.'); isValid = false; }
+      if (!lastName) { setErr('err-lastName', 'Last name cannot be blank.'); isValid = false; }
 
       // Street Address & City
       const address = document.getElementById('streetAddress').value.trim();
@@ -353,26 +411,26 @@
         isValid = false;
       }
       if (!city) {
-        setErr('err-city', 'City is required.');
+        setErr('err-city', 'City cannot be blank.');
         isValid = false;
       }
 
-      // State (2 letters) & Zip Code (5 or 5+4)
+      // State (2 letters) & Zip Code (5 digits)
       const state = document.getElementById('state').value.trim().toUpperCase();
       const zip = document.getElementById('zipCode').value.trim();
       const stateRegex = /^[A-Z]{2}$/;
       const zipRegex = /^\d{5}(-\d{4})?$/;
 
       if (!stateRegex.test(state) || !zipRegex.test(zip)) {
-        setErr('err-stateZip', 'Enter 2-letter state & 5-digit zip code.');
+        setErr('err-stateZip', 'Enter 2-letter state and valid zip code.');
         isValid = false;
       }
 
-      // Phone Number: Must match exactly (000)000-0000
+      // Phone Number: (000)000-0000 format
       const phoneVal = phoneInput.value.trim();
       const phoneRegex = /^\(\d{3}\)\d{3}-\d{4}$/;
       if (!phoneRegex.test(phoneVal)) {
-        setErr('err-phoneNumber', 'Enter 10-digit phone as (000)000-0000.');
+        setErr('err-phoneNumber', 'Must be a full 10-digit number: (000)000-0000.');
         isValid = false;
       }
 
@@ -380,41 +438,41 @@
       const email = document.getElementById('emailAddress').value.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        setErr('err-emailAddress', 'Enter a valid email address.');
+        setErr('err-emailAddress', 'Enter a valid email address (name@domain.ext).');
         isValid = false;
       }
 
-      // Birth Date (Valid calendar date, not in future, realistic age)
+      // Birth Date
       const bdateVal = document.getElementById('birthDate').value;
       if (!bdateVal) {
-        setErr('err-birthDate', 'Birth date is required.');
+        setErr('err-birthDate', 'Birth date cannot be blank.');
         isValid = false;
       } else {
         const selectedDate = new Date(bdateVal + 'T00:00:00');
         const now = new Date();
         const minDate = new Date();
-        minDate.setFullYear(now.getFullYear() - 115);
+        minDate.setFullYear(now.getFullYear() - 120);
 
         if (selectedDate > now) {
-          setErr('err-birthDate', 'Birth date cannot be in the future.');
+          setErr('err-birthDate', 'Warning: Birth date cannot be in the future.');
           isValid = false;
         } else if (selectedDate < minDate) {
-          setErr('err-birthDate', 'Please enter a valid date of birth.');
+          setErr('err-birthDate', 'Warning: Enter a realistic birth date.');
           isValid = false;
         }
       }
 
-      // Anti-Bot / Security Math Question
+      // Verify You're Human (Case-Sensitive 6-Character Captcha)
       const captchaInput = document.getElementById('captchaAnswer').value.trim();
-      if (parseInt(captchaInput, 10) !== expectedSum) {
-        setErr('err-captcha', 'Incorrect security answer.');
+      if (captchaInput !== currentCaptcha) {
+        setErr('err-captcha', 'Code does not match. Case-sensitive.');
         isValid = false;
       }
 
-      // Message Area
+      // Message
       const message = document.getElementById('message').value.trim();
       if (!message) {
-        setErr('err-message', 'Message cannot be left blank.');
+        setErr('err-message', 'Message cannot be blank.');
         isValid = false;
       }
 
@@ -436,22 +494,21 @@
         document.getElementById('rev-birthdate').textContent = formDataPayload.birthDate;
         document.getElementById('rev-message').textContent = formDataPayload.message;
 
-        // Switch to Review View
+        // Display Review Screen
         formView.style.display = 'none';
         confirmView.style.display = 'block';
       }
     });
 
-    // "Make Changes" Button
+    // Make Changes button returns to the editable form
     document.getElementById('btnEdit').addEventListener('click', function() {
       confirmView.style.display = 'none';
       formView.style.display = 'block';
     });
 
-    // "Confirm & Send Email" using mailto:
+    // Send using mailto:
     document.getElementById('btnFinalSubmit').addEventListener('click', function() {
-      // NOTE: Replace YOUR_EMAIL@example.com with your actual school/personal email
-      const recipientEmail = "YOUR_EMAIL@example.com";
+      const recipientEmail = "YOUR_EMAIL@example.com"; // Be sure to put your email address here
       const subject = encodeURIComponent("Assignment 3 Form Submission - " + formDataPayload.fullName);
       
       const bodyContent = 
@@ -462,8 +519,7 @@
         `Birth Date: ${formDataPayload.birthDate}\n\n` +
         `Message:\n${formDataPayload.message}`;
 
-      const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(bodyContent)}`;
-      window.location.href = mailtoUrl;
+      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(bodyContent)}`;
     });
   </script>
 </body>
