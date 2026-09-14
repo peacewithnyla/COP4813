@@ -4,12 +4,259 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assignment 3 - Contact & Information Form</title>
-  <link rel="stylesheet" href="style.css" />
+  <!-- Linked to your Theme.css file -->
+  <link rel="stylesheet" href="Theme.css" />
+
   <style>
+    /* Global box-sizing */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
       background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)),
                   url('hello kitty straw.jpg') no-repeat center center fixed;
       background-size: cover;
+    }
+
+    /* THE CARD (Clean white rounded box from image 2) */
+    .form-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(5px);
+      max-width: 660px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 2.25rem 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      box-sizing: border-box;
+    }
+
+    .form-card h1 {
+      color: var(--heading-dark, #6e1635);
+      text-align: center;
+      margin-bottom: 0.35rem;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .form-card p.subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--deep-green, #406853);
+      margin-bottom: 1.75rem;
+    }
+
+    /* GRID FIX: minmax(0, 1fr) prevents columns from blowing out past the card */
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-width: 0; /* Lets items shrink cleanly inside grid cells */
+      box-sizing: border-box;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.35rem;
+      color: var(--deep-green, #406853);
+    }
+
+    /* INPUT FIX: width: 100% and border-box keeps all edges inside the box */
+    .form-group input, 
+    .form-group textarea {
+      width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      padding: 0.75rem;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #ffffff;
+      color: #000000;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus, 
+    .form-group textarea:focus {
+      border-color: var(--primary-pink, #eb7a8d);
+      box-shadow: 0 0 0 3px rgba(235, 122, 141, 0.3);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* State & Zip side-by-side row fix */
+    .state-zip-row {
+      display: flex;
+      gap: 0.6rem;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .state-zip-row > div {
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .state-zip-row input {
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+
+    /* Captcha Styling */
+    .captcha-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+      width: 100%;
+    }
+
+    .captcha-badge {
+      background: linear-gradient(135deg, #fce3d9, #89bfa3);
+      color: var(--heading-dark, #6e1635);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      user-select: none;
+      border: 1px dashed var(--deep-green, #406853);
+      display: inline-block;
+    }
+
+    .btn-refresh {
+      background: none;
+      border: none;
+      color: var(--deep-green, #406853);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      line-height: 1;
+    }
+
+    .btn-refresh:hover {
+      color: var(--heading-dark, #6e1635);
+    }
+
+    .error-msg {
+      color: #b00020;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+      min-height: 1rem;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    button.action-btn {
+      flex: 1;
+      padding: 0.85rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    button.action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-submit {
+      background-color: var(--deep-green, #406853);
+      color: #ffffff;
+    }
+
+    .btn-submit:hover {
+      background-color: #2e4d3c;
+    }
+
+    .btn-confirm {
+      background-color: var(--primary-pink, #eb7a8d);
+      color: #ffffff;
+    }
+
+    .btn-confirm:hover {
+      background-color: #d15d71;
+    }
+
+    .btn-secondary {
+      background-color: #fce3d9;
+      color: var(--heading-dark, #6e1635);
+      border: 1.5px solid var(--primary-pink, #eb7a8d) !important;
+    }
+
+    .btn-secondary:hover {
+      background-color: #fbd3c4;
+    }
+
+    #confirmation-card {
+      display: none;
+    }
+
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      table-layout: fixed;
+    }
+
+    .review-table th, .review-table td {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid #e5e5e5;
+      text-align: left;
+      font-size: 0.93rem;
+      word-wrap: break-word;
+    }
+
+    .review-table th {
+      color: var(--deep-green, #406853);
+      width: 35%;
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .form-card {
+        padding: 1.25rem;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .full-width {
+        grid-column: span 1;
+      }
     }
   </style>
 </head>
@@ -66,7 +313,7 @@
               <div class="state-zip-row">
                 <div>
                   <label for="state">State *</label>
-                  <input type="text" id="state" maxlength="2" placeholder="State" style="text-transform: uppercase;" />
+                  <input type="text" id="state" maxlength="2" placeholder="STATE" style="text-transform: uppercase;" />
                 </div>
                 <div>
                   <label for="zipCode">Zip Code *</label>
