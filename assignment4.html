@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 4 - Loan Payoff Calculator </title>
+  
+  <!-- External CSS file -->
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    /* Global box-sizing */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)),
+                  url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Calculator Card matching Assignment 3 style */
+    .calc-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      max-width: 860px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 2.25rem 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      box-sizing: border-box;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #fdf2f8;
+      color: #db2777;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      border: 1.5px solid #fbcfe8;
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+    }
+
+    .calc-card h1 {
+      color: var(--heading-dark, #6e1635);
+      margin: 0 0 0.35rem 0;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .calc-card p.subtitle {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--deep-green, #406853);
+      margin: 0;
+    }
+
+    /* Grid for Inputs */
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.1rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-card {
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #f3f4f6;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .input-card:focus-within {
+      border-color: var(--primary-pink, #eb7a8d);
+      background-color: #ffffff;
+    }
+
+    .highlight-card-pink {
+      background: #fff5f7;
+      border-color: #fbcfe8;
+    }
+
+    .highlight-card-green {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .input-card label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--deep-green, #406853);
+      margin-bottom: 4px;
+    }
+
+    .input-card small {
+      font-size: 0.72rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .input-card input,
+    .input-card select {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      background-color: #ffffff;
+      color: var(--text-color, #000000);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-card input:focus,
+    .input-card select:focus {
+      border-color: var(--primary-pink, #eb7a8d);
+      box-shadow: 0 0 0 3px rgba(235, 122, 141, 0.3);
+    }
+
+    /* Action Button */
+    button.calc-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary-pink, #eb7a8d), #db2777);
+      color: #ffffff;
+      border: none;
+      padding: 0.9rem 1.4rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+      box-shadow: 0 4px 14px rgba(219, 39, 119, 0.25);
+    }
+
+    button.calc-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(219, 39, 119, 0.35);
+    }
+
+    /* KPI Summary Cards */
+    .kpi-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 1.5rem;
+    }
+
+    .kpi-item {
+      background: #ffffff;
+      border: 2px solid #fbcfe8;
+      padding: 14px;
+      border-radius: 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .kpi-item.matcha {
+      border-color: var(--primary-green, #89bfa3);
+      background: #f6fbf8;
+    }
+
+    .kpi-title {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #4b5563;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-val {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #9d174d;
+      margin-top: 5px;
+    }
+
+    .kpi-item.matcha .kpi-val {
+      color: var(--deep-green, #406853);
+    }
+
+    .kpi-sub {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    /* Chart Container */
+    .chart-box {
+      margin-top: 1.75rem;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 2px solid #f3f4f6;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .canvas-holder {
+      position: relative;
+      height: 420px;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .calc-card {
+        padding: 1.25rem;
+      }
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+      .canvas-holder {
+        height: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Site Header -->
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <!-- Main Navigation Menu -->
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            
+            <li><a href="#">My Classes</a>
+                <ul>
+                    <li><a href="index.html">COP4813</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Assignment 4 Content -->
+    <main>
+      <div class="calc-card">
+        <div class="header-section">
+          <span class="badge">✨ Student Finance Analytics 🍵</span>
+          <h1>Student Loan Payoff Visualizer</h1>
+          <p class="subtitle">
+            Models grace-period capitalization, forgiveness deductions, and monthly balance amortization curves.
+          </p>
+        </div>
+
+        <div class="input-grid">
+          <div class="input-card">
+            <label for="loanAmount">Original Principal ($)</label>
+            <input type="number" id="loanAmount" value="32000" step="500" min="0">
+            <small>Total starting disbursed amount</small>
+          </div>
+
+          <div class="input-card highlight-card-pink">
+            <label for="forgivenAmount">🌸 Forgiven / Pre-Paid ($)</label>
+            <input type="number" id="forgivenAmount" value="7000" step="500" min="0">
+            <small>Deducted prior to interest calculation</small>
+          </div>
+
+          <div class="input-card">
+            <label for="interestRate">Annual Rate (APR %)</label>
+            <input type="number" id="interestRate" value="5.8" step="0.1" min="0">
+            <small>Fixed annual percentage rate</small>
+          </div>
+
+          <div class="input-card">
+            <label for="standardYears">Standard Term (Years)</label>
+            <input type="number" id="standardYears" value="10" step="1" min="1">
+            <small>Standard repayment duration</small>
+          </div>
+
+          <div class="input-card">
+            <label for="gracePeriod">Grace Period (Months)</label>
+            <input type="number" id="gracePeriod" value="6" step="1" min="0">
+            <small>Post-school deferred period</small>
+          </div>
+
+          <div class="input-card">
+            <label for="loanType">Grace Period Treatment</label>
+            <select id="loanType">
+              <option value="unsubsidized" selected>Direct Unsubsidized (Capitalizes)</option>
+              <option value="subsidized">Direct Subsidized (0% Interest)</option>
+            </select>
+            <small>Determines grace accrual</small>
+          </div>
+
+          <div class="input-card highlight-card-green">
+            <label for="extraPayment">🍵 Extra Monthly Payment ($)</label>
+            <input type="number" id="extraPayment" value="50" step="10" min="0">
+            <small>Direct principal deduction</small>
+          </div>
+        </div>
+
+        <button id="calculateBtn" class="calc-btn" type="button">✨ Recalculate & Update Chart ✨</button>
+
+        <div class="kpi-banner" id="kpiContainer">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+
+        <div class="chart-box">
+          <div class="canvas-holder">
+            <canvas id="loanChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Site Footer -->
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <!-- Load Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Calculation & Visualization Script -->
+    <script>
+      let loanChartInstance = null;
+
+      function calculateAndPlot() {
+        // 1. Gather Inputs
+        const grossLoan = parseFloat(document.getElementById('loanAmount').value) || 0;
+        const forgiven = parseFloat(document.getElementById('forgivenAmount').value) || 0;
+        const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+        const standardYears = parseFloat(document.getElementById('standardYears').value) || 1;
+        const graceMonths = parseInt(document.getElementById('gracePeriod').value, 10) || 0;
+        const loanType = document.getElementById('loanType').value;
+        const extraPayment = parseFloat(document.getElementById('extraPayment').value) || 0;
+
+        // 2. Net Principal (Interest applies only after forgiveness/pre-payments)
+        const netPrincipal = Math.max(0, grossLoan - forgiven);
+        const r = (annualRate / 100) / 12;
+        const standardMonths = Math.round(standardYears * 12);
+
+        const xLabels = [];
+        const balanceData = [];
+        const cumulativeInterestData = [];
+
+        let currentBalance = netPrincipal;
+        let totalInterestPaid = 0;
+        let capitalizedInterest = 0;
+
+        // Phase A: Grace Period (Months 0 through graceMonths)
+        xLabels.push("Month 0 (Graduation)");
+        balanceData.push(parseFloat(currentBalance.toFixed(2)));
+        cumulativeInterestData.push(0);
+
+        for (let m = 1; m <= graceMonths; m++) {
+          if (loanType === 'unsubsidized' && r > 0 && currentBalance > 0) {
+            const monthInterest = currentBalance * r;
+            capitalizedInterest += monthInterest;
+            currentBalance += monthInterest;
+          }
+          xLabels.push(`Month ${m} (Grace)`);
+          balanceData.push(parseFloat(currentBalance.toFixed(2)));
+          cumulativeInterestData.push(parseFloat(capitalizedInterest.toFixed(2)));
+        }
+
+        const startingRepaymentPrincipal = currentBalance;
+
+        // Phase B: Standard minimum amortization calculation
+        let standardMonthlyPayment = 0;
+        if (startingRepaymentPrincipal > 0) {
+          if (r === 0) {
+            standardMonthlyPayment = startingRepaymentPrincipal / standardMonths;
+          } else {
+            standardMonthlyPayment = startingRepaymentPrincipal * (r * Math.pow(1 + r, standardMonths)) / (Math.pow(1 + r, standardMonths) - 1);
+          }
+        }
+
+        const actualMonthlyPayment = standardMonthlyPayment + extraPayment;
+
+        // Phase C: Month-by-month repayment loop
+        let activeMonth = graceMonths;
+        let paymentCount = 0;
+
+        while (currentBalance > 0.01 && paymentCount < 600) {
+          activeMonth++;
+          paymentCount++;
+
+          const monthlyInterest = currentBalance * r;
+          totalInterestPaid += monthlyInterest;
+
+          let principalPaid = actualMonthlyPayment - monthlyInterest;
+
+          if (currentBalance + monthlyInterest <= actualMonthlyPayment) {
+            principalPaid = currentBalance;
+            currentBalance = 0;
+          } else {
+            currentBalance -= principalPaid;
+          }
+
+          xLabels.push(`Month ${activeMonth}`);
+          balanceData.push(parseFloat(currentBalance.toFixed(2)));
+          cumulativeInterestData.push(parseFloat((capitalizedInterest + totalInterestPaid).toFixed(2)));
+        }
+
+        // 3. Time Calculations & Projected Payoff Date
+        const payoffYears = Math.floor(paymentCount / 12);
+        const payoffMonths = paymentCount % 12;
+
+        const yearText = payoffYears === 1 ? '1 Year' : `${payoffYears} Years`;
+        const monthText = payoffMonths === 1 ? '1 Month' : `${payoffMonths} Months`;
+        let repaymentHorizonText = "";
+
+        if (payoffYears > 0 && payoffMonths > 0) {
+          repaymentHorizonText = `${yearText}, ${monthText}`;
+        } else if (payoffYears > 0) {
+          repaymentHorizonText = yearText;
+        } else {
+          repaymentHorizonText = monthText;
+        }
+
+        const startDate = new Date();
+        const payoffDate = new Date(startDate.getFullYear(), startDate.getMonth() + graceMonths + paymentCount, 1);
+        const payoffDateString = payoffDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+        // 4. Update KPI Banner
+        const kpiContainer = document.getElementById('kpiContainer');
+        kpiContainer.innerHTML = `
+          <div class="kpi-item">
+            <span class="kpi-title">Starting Loan Balance</span>
+            <span class="kpi-val">$${startingRepaymentPrincipal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <span class="kpi-sub">${forgiven > 0 ? `After $${forgiven.toLocaleString()} deduction` : 'Principal after grace'}</span>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-title">Monthly Payment</span>
+            <span class="kpi-val">$${actualMonthlyPayment.toFixed(2)}</span>
+            <span class="kpi-sub">Includes $${extraPayment.toFixed(2)} extra/mo</span>
+          </div>
+          <div class="kpi-item matcha">
+            <span class="kpi-title">Repayment Time</span>
+            <span class="kpi-val">${repaymentHorizonText}</span>
+            <span class="kpi-sub">Payoff: <strong>${payoffDateString}</strong></span>
+          </div>
+          <div class="kpi-item matcha">
+            <span class="kpi-title">Total Lifetime Interest</span>
+            <span class="kpi-val">$${(capitalizedInterest + totalInterestPaid).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <span class="kpi-sub">Across full loan lifecycle</span>
+          </div>
+        `;
+
+        // 5. Render Chart.js Plot
+        const canvas = document.getElementById('loanChart');
+        const ctx = canvas.getContext('2d');
+
+        if (loanChartInstance) {
+          loanChartInstance.destroy();
+        }
+
+        const pinkGradient = ctx.createLinearGradient(0, 0, 0, 420);
+        pinkGradient.addColorStop(0, 'rgba(219, 39, 119, 0.32)');
+        pinkGradient.addColorStop(1, 'rgba(219, 39, 119, 0.00)');
+
+        const greenGradient = ctx.createLinearGradient(0, 0, 0, 420);
+        greenGradient.addColorStop(0, 'rgba(64, 104, 83, 0.24)');
+        greenGradient.addColorStop(1, 'rgba(64, 104, 83, 0.00)');
+
+        loanChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: xLabels,
+            datasets: [
+              {
+                label: '🌸 Remaining Loan Balance ($)',
+                data: balanceData,
+                borderColor: '#db2777',
+                borderWidth: 3.5,
+                backgroundColor: pinkGradient,
+                fill: true,
+                tension: 0.25,
+                pointRadius: balanceData.length > 70 ? 0 : 2.5,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: '#db2777'
+              },
+              {
+                label: '🍵 Cumulative Interest Accrued ($)',
+                data: cumulativeInterestData,
+                borderColor: '#406853',
+                borderWidth: 2.5,
+                borderDash: [6, 4],
+                backgroundColor: greenGradient,
+                fill: true,
+                tension: 0.25,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: '#406853'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
+            plugins: {
+              title: {
+                display: true,
+                text: 'STUDENT LOAN AMORTIZATION & BALANCE TRAJECTORY',
+                color: '#1f2937',
+                font: {
+                  size: 15,
+                  weight: '800',
+                  family: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
+                },
+                padding: { top: 6, bottom: 2 }
+              },
+              subtitle: {
+                display: true,
+                text: 'Remaining Loan Balance Paydown vs. Cumulative Accrued Interest',
+                color: '#4b5563',
+                font: {
+                  size: 11.5,
+                  weight: '600'
+                },
+                padding: { bottom: 18 }
+              },
+              legend: {
+                position: 'top',
+                align: 'center',
+                labels: {
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  boxWidth: 9,
+                  boxHeight: 9,
+                  padding: 18,
+                  font: {
+                    size: 12,
+                    weight: '700'
+                  },
+                  color: '#1f2937'
+                }
+              },
+              tooltip: {
+                backgroundColor: '#ffffff',
+                titleColor: '#111827',
+                bodyColor: '#1f2937',
+                titleFont: { weight: '800', size: 13 },
+                bodyFont: { weight: '700', size: 12 },
+                borderColor: '#fbcfe8',
+                borderWidth: 2,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                  title: function(context) {
+                    const rawLabel = context[0].label;
+                    const mIndex = context[0].dataIndex;
+                    const pointDate = new Date(startDate.getFullYear(), startDate.getMonth() + mIndex, 1);
+                    const dateFormatted = pointDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    return `${rawLabel} • ${dateFormatted}`;
+                  },
+                  label: function(context) {
+                    return ` ${context.dataset.label}: $${context.parsed.y.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'TIMELINE (MONTHS ELAPSED FROM GRADUATION)',
+                  color: '#1f2937',
+                  font: {
+                    size: 11,
+                    weight: '800',
+                    family: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
+                  },
+                  padding: { top: 12 }
+                },
+                ticks: {
+                  color: '#374151',
+                  font: {
+                    weight: '700',
+                    size: 11
+                  },
+                  maxTicksLimit: 12
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.04)',
+                  borderDash: [4, 4]
+                }
+              },
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'LOAN BALANCE ($ USD)',
+                  color: '#9d174d',
+                  font: {
+                    size: 12.5,
+                    weight: '900',
+                    family: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
+                  },
+                  padding: { bottom: 12 }
+                },
+                ticks: {
+                  color: '#1f2937',
+                  font: {
+                    weight: '800',
+                    size: 11
+                  },
+                  callback: function(value) {
+                    return '$' + value.toLocaleString();
+                  }
+                },
+                grid: {
+                  color: 'rgba(219, 39, 119, 0.08)'
+                }
+              }
+            }
+          }
+        });
+      }
+
+      document.getElementById('calculateBtn').addEventListener('click', calculateAndPlot);
+      window.addEventListener('DOMContentLoaded', calculateAndPlot);
+    </script>
+</body>
+</html>
