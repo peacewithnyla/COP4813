@@ -24,7 +24,7 @@
       background-size: cover;
     }
 
-    /* Container Card */
+    /* Container Card matching previous assignments */
     .spiro-card {
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(6px);
@@ -70,7 +70,7 @@
       margin: 0;
     }
 
-    /* Preset Selection Bar */
+    /* Clean Preset Selection Bar */
     .preset-section {
       background: #f4faf6;
       border: 1.5px solid var(--primary-green, #89bfa3);
@@ -303,12 +303,12 @@
 
         <!-- Clean, Simplified Presets -->
         <div class="preset-section">
-          <label for="sigilPreset">Choose a Sigil:</label>
+          <label for="sigilPreset">Choose a Spiritual Sigil:</label>
           <select id="sigilPreset">
             <option value="crossroads" selected>Crossroads Veve </option>
             <option value="oshun">Oshun's Mirror </option>
             <option value="yemaya">Ocean Wheel </option>
-            <option value="serpent">Serpent Coil </option>
+            <option value="ayizan">Ayizan's Palm </option>
             <option value="gede">Ancestral Star </option>
             <option value="custom">— Custom Parameters —</option>
           </select>
@@ -339,7 +339,7 @@
 
         <!-- Action Controls -->
         <div class="btn-row">
-          <button id="btnDraw" type="button" class="action-btn btn-draw">🌿 Draw Symbol</button>
+          <button id="btnDraw" type="button" class="action-btn btn-draw">Draw Symbol</button>
           <button id="btnPause" type="button" class="action-btn btn-stop">Pause Drawing</button>
           <button id="btnClear" type="button" class="action-btn btn-clear">Clear Canvas</button>
         </div>
@@ -357,7 +357,7 @@
         <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
     </footer>
 
-    <!-- Real-Time Spirograph Script -->
+    <!-- Spirograph Script -->
     <script>
       const canvas = document.getElementById('spiroCanvas');
       const ctx = canvas.getContext('2d');
@@ -385,10 +385,10 @@
       // Mathematical presets for African Diaspora & Witchcraft symbology
       const presets = {
         crossroads: { R: 180, r: 45, O: 120 }, // 4-Point Crossroads Diamond
-        oshun:      { R: 150, r: 60, O: 115 }, // 5-Point Sacred Oshun Star
+        oshun:      { R: 150, r: 60, O: 115 }, // 5-Point Oshun Star
         yemaya:     { R: 175, r: 75, O: 125 }, // 7-Point Water Wheel
-        serpent:    { R: 160, r: 80, O: 130 }, // 3-Fold Coiled Serpent Knot
-        gede:       { R: 180, r: 80, O: 120 }  // 9-Point Intricate Ancestral Star
+        ayizan:     { R: 168, r: 72, O: 135 }, // 14-point Ayizan priestess veve
+        gede:       { R: 180, r: 80, O: 120 }  // 9-Point Ancestral Star
       };
 
       // Greatest Common Divisor to calculate exact closure of curve
@@ -474,18 +474,18 @@
       }
 
       function runAnimation() {
-        // Number of points calculated per frame for fluid real-time drawing
-        const stepsPerFrame = 16; 
+        // High density steps per frame for smooth, intricate real-time drawing
+        const stepsPerFrame = 28; 
 
         for (let i = 0; i < stepsPerFrame; i++) {
           if (t > maxT + 0.05) {
-            canvasStatus.textContent = "✨ Drawing complete! Pattern closed.";
+            canvasStatus.textContent = "Drawing complete";
             cancelAnimationFrame(animationId);
             animationId = null;
             return;
           }
 
-          // Spirograph equations:
+          // Spirograph parametric equations:
           // x = (R+r)*cos(t) - (r+O)*cos(((R+r)/r)*t)
           // y = (R+r)*sin(t) - (r+O)*sin(((R+r)/r)*t)
           const k = (currentR + currentr) / currentr;
@@ -500,15 +500,15 @@
             ctx.moveTo(prevX, prevY);
             ctx.lineTo(plotX, plotY);
             
-            // Deep Forest Green stroke
+            // Ultra-crisp Deep Forest Green stroke
             ctx.strokeStyle = '#1e3f20';
-            ctx.lineWidth = 1.75;
+            ctx.lineWidth = 1.25;
             ctx.stroke();
           }
 
           prevX = plotX;
           prevY = plotY;
-          t += 0.015;
+          t += 0.008; // Fine-grained angle step for ultra-crisp line detail
         }
 
         animationId = requestAnimationFrame(runAnimation);
