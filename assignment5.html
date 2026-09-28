@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 5 - Spirograph</title>
+  
+  <!-- External CSS file -->
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    /* Global box-sizing */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)),
+                  url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Container Card */
+    .spiro-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      max-width: 860px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 2.25rem 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      box-sizing: border-box;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #fdf2f8;
+      color: #db2777;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      border: 1.5px solid #fbcfe8;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .spiro-card h1 {
+      color: var(--heading-dark, #6e1635);
+      margin: 0 0 0.35rem 0;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .spiro-card p.subtitle {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--deep-green, #406853);
+      margin: 0;
+    }
+
+    /* Preset Selection Bar */
+    .preset-section {
+      background: #f4faf6;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .preset-section label {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #1e3f20;
+    }
+
+    .preset-section select {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background-color: #ffffff;
+      color: #1e3f20;
+      outline: none;
+    }
+
+    /* Input Grid */
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.1rem;
+      width: 100%;
+      margin-bottom: 1.25rem;
+    }
+
+    .input-card {
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #f3f4f6;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .input-card:focus-within {
+      border-color: var(--primary-pink, #eb7a8d);
+      background-color: #ffffff;
+    }
+
+    .highlight-card-green {
+      background: #f4faf6;
+      border-color: #bbf7d0;
+    }
+
+    .input-card label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #1e3f20;
+      margin-bottom: 4px;
+    }
+
+    .input-card small {
+      font-size: 0.72rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .input-card input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      background-color: #ffffff;
+      color: #000000;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-card input:focus {
+      border-color: #1e3f20;
+      box-shadow: 0 0 0 3px rgba(30, 63, 32, 0.2);
+    }
+
+    .error-msg {
+      color: #b00020;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      min-height: 1.2rem;
+    }
+
+    /* Action Buttons */
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    button.action-btn {
+      flex: 1;
+      min-width: 160px;
+      padding: 0.85rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button.action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-draw {
+      background: linear-gradient(135deg, #2b5930, #163018);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(22, 48, 24, 0.3);
+    }
+
+    .btn-stop {
+      background-color: #fdf2f8;
+      color: var(--heading-dark, #6e1635);
+      border: 1.5px solid #fbcfe8 !important;
+    }
+
+    .btn-clear {
+      background-color: #ffffff;
+      color: #1e3f20;
+      border: 1.5px solid var(--primary-green, #89bfa3) !important;
+    }
+
+    /* Canvas Box */
+    .canvas-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fafaf8;
+      border-radius: 16px;
+      border: 2px solid #e5e7eb;
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    canvas#spiroCanvas {
+      background: radial-gradient(circle at center, #ffffff 45%, #f7f9f6 100%);
+      border: 2px solid #1e3f20;
+      border-radius: 14px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      box-shadow: inset 0 0 20px rgba(30, 63, 32, 0.05);
+    }
+
+    .canvas-status {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1e3f20;
+      margin-top: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 640px) {
+      .spiro-card {
+        padding: 1.25rem;
+      }
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Site Header -->
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <!-- Main Navigation Menu -->
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            
+            <li><a href="#">My Classes</a>
+                <ul>
+                    <li><a href="index.html">COP4813</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                </ul>
+            </li>
+            
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Assignment 5 Content -->
+    <main>
+      <div class="spiro-card">
+        <div class="header-section">
+          <span class="badge">✨ Sacred Geometry & Canvas 🌿</span>
+          <h1>Mystic Sigil Spirograph</h1>
+          <p class="subtitle">
+            Generating symbols and geometric wheels in real-time using mathematical curve equations.
+          </p>
+        </div>
+
+        <!-- Clean, Simplified Presets -->
+        <div class="preset-section">
+          <label for="sigilPreset">Choose a Sigil:</label>
+          <select id="sigilPreset">
+            <option value="crossroads" selected>Crossroads Veve </option>
+            <option value="oshun">Oshun's Mirror </option>
+            <option value="yemaya">Ocean Wheel </option>
+            <option value="serpent">Serpent Coil </option>
+            <option value="gede">Ancestral Star </option>
+            <option value="custom">— Custom Parameters —</option>
+          </select>
+        </div>
+
+        <!-- Input Parameters with Seeded Values -->
+        <div class="input-grid">
+          <div class="input-card">
+            <label for="outerR">Outer Radius (R)</label>
+            <input type="number" id="outerR" value="180" min="50" max="250" step="1">
+            <small>Outer fixed ring circle</small>
+          </div>
+
+          <div class="input-card highlight-card-green">
+            <label for="innerR">Inner Radius (r)</label>
+            <input type="number" id="innerR" value="45" min="1" max="200" step="1">
+            <small>Inner rolling circle (r &lt; R)</small>
+          </div>
+
+          <div class="input-card">
+            <label for="offsetO">Pen Distance (O)</label>
+            <input type="number" id="offsetO" value="120" min="5" max="180" step="1">
+            <small>Distance from inner circle center</small>
+          </div>
+        </div>
+
+        <div id="errorText" class="error-msg"></div>
+
+        <!-- Action Controls -->
+        <div class="btn-row">
+          <button id="btnDraw" type="button" class="action-btn btn-draw">🌿 Draw Symbol</button>
+          <button id="btnPause" type="button" class="action-btn btn-stop">Pause Drawing</button>
+          <button id="btnClear" type="button" class="action-btn btn-clear">Clear Canvas</button>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+          <canvas id="spiroCanvas" width="600" height="600"></canvas>
+          <span id="canvasStatus" class="canvas-status">Ready. Select a symbol or click "Draw Symbol".</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Site Footer -->
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <!-- Real-Time Spirograph Script -->
+    <script>
+      const canvas = document.getElementById('spiroCanvas');
+      const ctx = canvas.getContext('2d');
+      const errorText = document.getElementById('errorText');
+      const canvasStatus = document.getElementById('canvasStatus');
+
+      const outerRInput = document.getElementById('outerR');
+      const innerRInput = document.getElementById('innerR');
+      const offsetOInput = document.getElementById('offsetO');
+      const presetSelect = document.getElementById('sigilPreset');
+
+      let animationId = null;
+      let isPaused = false;
+      let t = 0;
+      let maxT = 0;
+      let prevX = null;
+      let prevY = null;
+      let currentR = 180;
+      let currentr = 45;
+      let currentO = 120;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Mathematical presets for African Diaspora & Witchcraft symbology
+      const presets = {
+        crossroads: { R: 180, r: 45, O: 120 }, // 4-Point Crossroads Diamond
+        oshun:      { R: 150, r: 60, O: 115 }, // 5-Point Sacred Oshun Star
+        yemaya:     { R: 175, r: 75, O: 125 }, // 7-Point Water Wheel
+        serpent:    { R: 160, r: 80, O: 130 }, // 3-Fold Coiled Serpent Knot
+        gede:       { R: 180, r: 80, O: 120 }  // 9-Point Intricate Ancestral Star
+      };
+
+      // Greatest Common Divisor to calculate exact closure of curve
+      function gcd(a, b) {
+        return b === 0 ? a : gcd(b, a % b);
+      }
+
+      function applyPreset(key) {
+        if (!presets[key]) return;
+        outerRInput.value = presets[key].R;
+        innerRInput.value = presets[key].r;
+        offsetOInput.value = presets[key].O;
+        startSpirograph();
+      }
+
+      presetSelect.addEventListener('change', function() {
+        if (this.value !== 'custom') {
+          applyPreset(this.value);
+        }
+      });
+
+      // If user edits text boxes manually, toggle preset dropdown to 'custom'
+      [outerRInput, innerRInput, offsetOInput].forEach(input => {
+        input.addEventListener('input', () => {
+          presetSelect.value = 'custom';
+        });
+      });
+
+      function clearCanvas() {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        isPaused = false;
+        document.getElementById('btnPause').textContent = "Pause Drawing";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasStatus.textContent = "Canvas cleared.";
+        prevX = null;
+        prevY = null;
+        t = 0;
+      }
+
+      function startSpirograph() {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        isPaused = false;
+        document.getElementById('btnPause').textContent = "Pause Drawing";
+        errorText.textContent = "";
+
+        currentR = parseFloat(outerRInput.value);
+        currentr = parseFloat(innerRInput.value);
+        currentO = parseFloat(offsetOInput.value);
+
+        // Validation: Inner circle must be smaller than Outer circle
+        if (isNaN(currentR) || isNaN(currentr) || isNaN(currentO)) {
+          errorText.textContent = "Please enter valid numeric values.";
+          return;
+        }
+        if (currentr >= currentR) {
+          errorText.textContent = "Validation Error: Inner radius (r) must be smaller than Outer radius (R).";
+          return;
+        }
+        if (currentr <= 0 || currentR <= 0 || currentO <= 0) {
+          errorText.textContent = "Values must be greater than zero.";
+          return;
+        }
+
+        // Clean canvas for real-time trace
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate exact mathematical closure period
+        const rotations = currentr / gcd(Math.round(currentR), Math.round(currentr));
+        maxT = 2 * Math.PI * rotations;
+
+        t = 0;
+        prevX = null;
+        prevY = null;
+        canvasStatus.textContent = "Drawing symbol in real-time...";
+
+        runAnimation();
+      }
+
+      function runAnimation() {
+        // Number of points calculated per frame for fluid real-time drawing
+        const stepsPerFrame = 16; 
+
+        for (let i = 0; i < stepsPerFrame; i++) {
+          if (t > maxT + 0.05) {
+            canvasStatus.textContent = "✨ Drawing complete! Pattern closed.";
+            cancelAnimationFrame(animationId);
+            animationId = null;
+            return;
+          }
+
+          // Spirograph equations:
+          // x = (R+r)*cos(t) - (r+O)*cos(((R+r)/r)*t)
+          // y = (R+r)*sin(t) - (r+O)*sin(((R+r)/r)*t)
+          const k = (currentR + currentr) / currentr;
+          const x = (currentR + currentr) * Math.cos(t) - (currentr + currentO) * Math.cos(k * t);
+          const y = (currentR + currentr) * Math.sin(t) - (currentr + currentO) * Math.sin(k * t);
+
+          const plotX = centerX + x;
+          const plotY = centerY - y;
+
+          if (prevX !== null && prevY !== null) {
+            ctx.beginPath();
+            ctx.moveTo(prevX, prevY);
+            ctx.lineTo(plotX, plotY);
+            
+            // Deep Forest Green stroke
+            ctx.strokeStyle = '#1e3f20';
+            ctx.lineWidth = 1.75;
+            ctx.stroke();
+          }
+
+          prevX = plotX;
+          prevY = plotY;
+          t += 0.015;
+        }
+
+        animationId = requestAnimationFrame(runAnimation);
+      }
+
+      function togglePause() {
+        if (!animationId && !isPaused) return;
+
+        if (!isPaused) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+          isPaused = true;
+          document.getElementById('btnPause').textContent = "Resume Drawing";
+          canvasStatus.textContent = "Drawing paused.";
+        } else {
+          isPaused = false;
+          document.getElementById('btnPause').textContent = "Pause Drawing";
+          canvasStatus.textContent = "Resuming drawing...";
+          animationId = requestAnimationFrame(runAnimation);
+        }
+      }
+
+      // Button Event Listeners
+      document.getElementById('btnDraw').addEventListener('click', startSpirograph);
+      document.getElementById('btnPause').addEventListener('click', togglePause);
+      document.getElementById('btnClear').addEventListener('click', clearCanvas);
+
+      // Auto-draw Crossroads Veve on load
+      window.addEventListener('DOMContentLoaded', () => {
+        applyPreset('crossroads');
+      });
+    </script>
+</body>
+</html>
