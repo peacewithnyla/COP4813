@@ -24,7 +24,7 @@
       background-size: cover;
     }
 
-    /* Container Card matching previous assignments */
+    /* Container Card */
     .spiro-card {
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(6px);
@@ -294,16 +294,16 @@
     <main>
       <div class="spiro-card">
         <div class="header-section">
-          <span class="badge">✨ Sacred Geometry & Canvas 🌿</span>
-          <h1>Mystic Sigil Spirograph</h1>
+          <span class="badge">Canvas Spirograph Generator</span>
+          <h1>Sigil Spirograph</h1>
           <p class="subtitle">
-            Generating symbols and geometric wheels in real-time using mathematical curve equations.
+            Generating symbols in real-time.
           </p>
         </div>
 
-        <!-- Clean, Simplified Presets -->
+        <!-- Presets -->
         <div class="preset-section">
-          <label for="sigilPreset">Choose a Spiritual Sigil:</label>
+          <label for="sigilPreset">Choose a Model:</label>
           <select id="sigilPreset">
             <option value="crossroads" selected>Crossroads Veve </option>
             <option value="oshun">Oshun's Mirror </option>
@@ -382,7 +382,7 @@
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 
-      // Mathematical presets for African Diaspora & Witchcraft symbology
+      // Mathematical presets symbology
       const presets = {
         crossroads: { R: 180, r: 45, O: 120 }, // 4-Point Crossroads Diamond
         oshun:      { R: 150, r: 60, O: 115 }, // 5-Point Oshun Star
@@ -474,12 +474,12 @@
       }
 
       function runAnimation() {
-        // High density steps per frame for smooth, intricate real-time drawing
+        // intricate real-time drawing
         const stepsPerFrame = 28; 
 
         for (let i = 0; i < stepsPerFrame; i++) {
           if (t > maxT + 0.05) {
-            canvasStatus.textContent = "Drawing complete";
+            canvasStatus.textContent = "Drawing Complete";
             cancelAnimationFrame(animationId);
             animationId = null;
             return;
@@ -500,7 +500,7 @@
             ctx.moveTo(prevX, prevY);
             ctx.lineTo(plotX, plotY);
             
-            // Ultra-crisp Deep Forest Green stroke
+            // Deep Forest Green stroke
             ctx.strokeStyle = '#1e3f20';
             ctx.lineWidth = 1.25;
             ctx.stroke();
@@ -508,7 +508,7 @@
 
           prevX = plotX;
           prevY = plotY;
-          t += 0.008; // Fine-grained angle step for ultra-crisp line detail
+          t += 0.008; // line detail
         }
 
         animationId = requestAnimationFrame(runAnimation);
