@@ -1,0 +1,286 @@
+{
+  "team": "France National Football Team",
+  "nickname": "Les Bleus",
+  "association": "Fédération Française de Football (FFF)",
+  "headCoach": "Zinédine Zidane",
+  "coachingStaff": {
+    "assistantCoach": "David Bettoni",
+    "secondAssistant": "Guy Stéphan",
+    "goalkeepingCoach": "Franck Raviot",
+    "fitnessCoach": "Grégory Dupont"
+  },
+  "leadership": {
+    "captain": "Kylian Mbappé",
+    "viceCaptain": "Aurélien Tchouaméni"
+  },
+  "fifaRanking": 2,
+  "worldCupCampaigns": [
+    {
+      "edition": "2018 FIFA World Cup (Russia)",
+      "finish": "Champions (1st Place)",
+      "record": "6 Wins, 1 Draw, 0 Losses",
+      "goalsFor": 14,
+      "goalsAgainst": 6,
+      "topScorers": "Antoine Griezmann (4), Kylian Mbappé (4)"
+    },
+    {
+      "edition": "2022 FIFA World Cup (Qatar)",
+      "finish": "Runners-up (2nd Place)",
+      "record": "5 Wins, 1 Draw, 1 Loss",
+      "goalsFor": 16,
+      "goalsAgainst": 8,
+      "topScorers": "Kylian Mbappé (8 - Golden Boot), Olivier Giroud (4)"
+    },
+    {
+      "edition": "2026 FIFA World Cup (North America)",
+      "finish": "Finalists",
+      "record": "5 Wins, 1 Draw, 1 Loss",
+      "goalsFor": 15,
+      "goalsAgainst": 7,
+      "topScorers": "Kylian Mbappé (6), Bradley Barcola (3)"
+    }
+  ],
+  "recentMatches": [
+    {
+      "date": "2024-07-09",
+      "competition": "UEFA Euro 2024 Semi-Final",
+      "opponent": "Spain",
+      "score": "1 - 2",
+      "result": "Loss"
+    },
+    {
+      "date": "2024-09-06",
+      "competition": "UEFA Nations League",
+      "opponent": "Italy",
+      "score": "1 - 3",
+      "result": "Loss"
+    },
+    {
+      "date": "2024-09-09",
+      "competition": "UEFA Nations League",
+      "opponent": "Belgium",
+      "score": "2 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2024-10-10",
+      "competition": "UEFA Nations League",
+      "opponent": "Israel",
+      "score": "4 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2024-10-14",
+      "competition": "UEFA Nations League",
+      "opponent": "Belgium",
+      "score": "2 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2024-11-14",
+      "competition": "UEFA Nations League",
+      "opponent": "Israel",
+      "score": "0 - 0",
+      "result": "Draw"
+    },
+    {
+      "date": "2024-11-17",
+      "competition": "UEFA Nations League",
+      "opponent": "Italy",
+      "score": "3 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2025-03-20",
+      "competition": "UEFA Nations League Quarter-Final",
+      "opponent": "Croatia",
+      "score": "2 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2025-03-23",
+      "competition": "UEFA Nations League Quarter-Final",
+      "opponent": "Croatia",
+      "score": "1 - 1",
+      "result": "Draw"
+    },
+    {
+      "date": "2025-06-05",
+      "competition": "International Friendly",
+      "opponent": "Germany",
+      "score": "2 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2025-09-05",
+      "competition": "FIFA World Cup Qualifiers",
+      "opponent": "Sweden",
+      "score": "3 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2025-10-10",
+      "competition": "FIFA World Cup Qualifiers",
+      "opponent": "Poland",
+      "score": "2 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2025-11-14",
+      "competition": "FIFA World Cup Qualifiers",
+      "opponent": "Norway",
+      "score": "3 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2026-06-16",
+      "competition": "2026 World Cup Group Match",
+      "opponent": "Senegal",
+      "score": "2 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2026-06-22",
+      "competition": "2026 World Cup Group Match",
+      "opponent": "Japan",
+      "score": "2 - 1",
+      "result": "Win"
+    },
+    {
+      "date": "2026-07-04",
+      "competition": "2026 World Cup Quarter-Final",
+      "opponent": "Portugal",
+      "score": "1 - 0",
+      "result": "Win"
+    },
+    {
+      "date": "2026-09-08",
+      "competition": "UEFA Nations League",
+      "opponent": "Netherlands",
+      "score": "2 - 1",
+      "result": "Win"
+    }
+  ],
+  "squad": [
+    {
+      "number": 10,
+      "name": "Kylian Mbappé",
+      "role": "Captain",
+      "nationalPosition": "Center Forward / Left Winger",
+      "club": "Real Madrid",
+      "clubPosition": "Striker / Center Forward",
+      "seasonStats": { "goals": 34, "assists": 11 },
+      "nationalTeamCareer": { "caps": 96, "goals": 56, "assists": 34 }
+    },
+    {
+      "number": 8,
+      "name": "Aurélien Tchouaméni",
+      "role": "Vice-Captain",
+      "nationalPosition": "Central Defensive Midfielder",
+      "club": "Real Madrid",
+      "clubPosition": "Defensive Midfielder / Center Back",
+      "seasonStats": { "goals": 4, "assists": 6 },
+      "nationalTeamCareer": { "caps": 44, "goals": 4, "assists": 6 }
+    },
+    {
+      "number": 7,
+      "name": "Antoine Griezmann",
+      "role": "Squad Leader",
+      "nationalPosition": "Attacking Midfielder / Shadow Striker",
+      "club": "Atlético Madrid",
+      "clubPosition": "Second Striker / Right Attacking Midfielder",
+      "seasonStats": { "goals": 16, "assists": 14 },
+      "nationalTeamCareer": { "caps": 137, "goals": 44, "assists": 38 }
+    },
+    {
+      "number": 11,
+      "name": "Ousmane Dembélé",
+      "role": "Squad Player",
+      "nationalPosition": "Right Winger",
+      "club": "Paris Saint-Germain",
+      "clubPosition": "Right / Inverted Left Winger",
+      "seasonStats": { "goals": 11, "assists": 17 },
+      "nationalTeamCareer": { "caps": 58, "goals": 7, "assists": 16 }
+    },
+    {
+      "number": 20,
+      "name": "Bradley Barcola",
+      "role": "Squad Player",
+      "nationalPosition": "Left Winger",
+      "club": "Paris Saint-Germain",
+      "clubPosition": "Left Winger",
+      "seasonStats": { "goals": 18, "assists": 12 },
+      "nationalTeamCareer": { "caps": 22, "goals": 6, "assists": 5 }
+    },
+    {
+      "number": 6,
+      "name": "Eduardo Camavinga",
+      "role": "Squad Player",
+      "nationalPosition": "Central Box-to-Box Midfielder",
+      "club": "Real Madrid",
+      "clubPosition": "Central Midfielder / Utility Left Back",
+      "seasonStats": { "goals": 3, "assists": 8 },
+      "nationalTeamCareer": { "caps": 32, "goals": 2, "assists": 7 }
+    },
+    {
+      "number": 14,
+      "name": "Adrien Rabiot",
+      "role": "Squad Player",
+      "nationalPosition": "Left Central Midfielder",
+      "club": "Marseille",
+      "clubPosition": "Central Midfielder / Playmaker",
+      "seasonStats": { "goals": 7, "assists": 5 },
+      "nationalTeamCareer": { "caps": 54, "goals": 6, "assists": 8 }
+    },
+    {
+      "number": 22,
+      "name": "Théo Hernandez",
+      "role": "Squad Player",
+      "nationalPosition": "Left Wing-Back",
+      "club": "AC Milan",
+      "clubPosition": "Left Full-Back",
+      "seasonStats": { "goals": 5, "assists": 10 },
+      "nationalTeamCareer": { "caps": 42, "goals": 3, "assists": 11 }
+    },
+    {
+      "number": 5,
+      "name": "Jules Koundé",
+      "role": "Squad Player",
+      "nationalPosition": "Right Back",
+      "club": "Barcelona",
+      "clubPosition": "Right Back / Center Back",
+      "seasonStats": { "goals": 3, "assists": 7 },
+      "nationalTeamCareer": { "caps": 45, "goals": 0, "assists": 4 }
+    },
+    {
+      "number": 17,
+      "name": "William Saliba",
+      "role": "Squad Player",
+      "nationalPosition": "Right Center Back",
+      "club": "Arsenal",
+      "clubPosition": "Center Back",
+      "seasonStats": { "goals": 2, "assists": 1 },
+      "nationalTeamCareer": { "caps": 34, "goals": 0, "assists": 1 }
+    },
+    {
+      "number": 4,
+      "name": "Dayot Upamecano",
+      "role": "Squad Player",
+      "nationalPosition": "Left Center Back",
+      "club": "Bayern Munich",
+      "clubPosition": "Center Back",
+      "seasonStats": { "goals": 2, "assists": 2 },
+      "nationalTeamCareer": { "caps": 33, "goals": 2, "assists": 1 }
+    },
+    {
+      "number": 16,
+      "name": "Mike Maignan",
+      "role": "Squad Player",
+      "nationalPosition": "Starting Goalkeeper",
+      "club": "AC Milan",
+      "clubPosition": "First-Choice Goalkeeper",
+      "seasonStats": { "goals": 0, "assists": 1 },
+      "nationalTeamCareer": { "caps": 35, "goals": 0, "assists": 1 }
+    }
+  ]
+}
