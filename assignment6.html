@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nyla Webb | Assignment 6 - Team France JSON</title>
+  <title>Nyla Webb | Assignment 6 - Team France "Les Bleus"</title>
   
   <link rel="stylesheet" href="theme.css" />
 
@@ -25,7 +25,7 @@
     .data-card {
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(6px);
-      max-width: 1040px;
+      max-width: 1100px;
       width: 100%;
       margin: 2.5rem auto;
       padding: 2.25rem 2rem;
@@ -123,7 +123,7 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
     }
 
     table.custom-table th {
@@ -277,7 +277,7 @@
         <div id="loadingStatus" class="status-msg">Loading external data from les_bleus.json...</div>
 
         <div id="contentWrapper" style="display: none;">
-          <!-- Team Header Meta -->
+          <!-- Team Header -->
           <div class="meta-grid">
             <div><strong>Team:</strong> <span id="teamName"></span> (<span id="teamNickname"></span>)</div>
             <div><strong>Head Coach:</strong> <span id="headCoach"></span></div>
@@ -287,7 +287,7 @@
             <div><strong>Federation:</strong> <span id="teamAssoc"></span></div>
           </div>
 
-          <!-- Technical & Coaching Staff -->
+          <!-- Coaching Staff -->
           <div class="section-title">📋 Technical & Coaching Staff</div>
           <div class="staff-card">
             <div><strong>Assistant Coach:</strong> <span id="staffAssistant"></span></div>
@@ -330,8 +330,8 @@
             </table>
           </div>
 
-          <!-- Section 3: Player Squad Stats Breakdown -->
-          <div class="section-title">👥 Player Squad, Club vs. National Roles & Stats</div>
+          <!-- Section 3: Player Squad Stats -->
+          <div class="section-title">👥 Player Squad, Club vs. National Roles & Celebrations</div>
           <div class="table-container">
             <table class="custom-table">
               <thead>
@@ -341,6 +341,7 @@
                   <th>National Position</th>
                   <th>Club</th>
                   <th>Club Position</th>
+                  <th>Signature Celebration / Move</th>
                   <th style="text-align: right;">Season Goals</th>
                   <th style="text-align: right;">Season Assists</th>
                   <th style="text-align: right;">Nat'l Caps</th>
@@ -360,7 +361,7 @@
         <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
     </footer>
 
-    <!-- Conversational Fetch Script -->
+    <!-- Fetch Script -->
     <script>
       // Run once the webpage finishes loading
       document.addEventListener('DOMContentLoaded', () => {
@@ -392,7 +393,7 @@
             document.getElementById('staffKeeper').textContent = data.coachingStaff.goalkeepingCoach;
             document.getElementById('staffFitness').textContent = data.coachingStaff.fitnessCoach;
 
-            // 2. Build the World Cup tournament history table
+            // 2. World Cup tournament history table
             const wcBody = document.getElementById('worldCupTableBody');
             wcBody.innerHTML = '';
             data.worldCupCampaigns.forEach(campaign => {
@@ -407,7 +408,7 @@
               wcBody.appendChild(row);
             });
 
-            // 3. Build the recent 2-year match score table
+            // 3. Recent 2-year match score table
             const matchesBody = document.getElementById('matchesTableBody');
             matchesBody.innerHTML = '';
             data.recentMatches.forEach(match => {
@@ -428,7 +429,7 @@
               matchesBody.appendChild(row);
             });
 
-            // 4. Build the detailed squad player table
+            // 4. Detailed squad player table with celebrations
             const squadBody = document.getElementById('squadTableBody');
             squadBody.innerHTML = '';
             data.squad.forEach(player => {
@@ -448,6 +449,7 @@
                 <td>${player.nationalPosition}</td>
                 <td>${player.club}</td>
                 <td><em>${player.clubPosition}</em></td>
+                <td>${player.signatureCelebration}</td>
                 <td style="text-align: right; font-weight: 700;">${player.seasonStats.goals}</td>
                 <td style="text-align: right;">${player.seasonStats.assists}</td>
                 <td style="text-align: right;">${player.nationalTeamCareer.caps}</td>
@@ -462,7 +464,7 @@
             document.getElementById('contentWrapper').style.display = 'block';
           })
           .catch(error => {
-            // Friendly error message if the file doesn't load
+            // error message if the file doesn't load
             console.error('Error fetching JSON data:', error);
             const statusEl = document.getElementById('loadingStatus');
             statusEl.textContent = 'Could not load data. Ensure les_bleus.json is saved in the same directory.';
