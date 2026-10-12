@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 7 - Drag & Drop</title>
+  
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)),
+                  url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      max-width: 900px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 2.25rem 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #fdf2f8;
+      color: #db2777;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      border: 1.5px solid #fbcfe8;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      color: var(--heading-dark, #6e1635);
+      margin: 0 0 0.35rem 0;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    /* Game Area Styles */
+    .table-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f0fdf4;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 1.5px solid var(--primary-green, #89bfa3);
+    }
+
+    button.btn-deal {
+      background: linear-gradient(135deg, #2b5930, #163018);
+      color: #ffffff;
+      padding: 10px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(22, 48, 24, 0.3);
+      transition: transform 0.1s ease;
+    }
+
+    button.btn-deal:hover {
+      transform: translateY(-2px);
+    }
+
+    button.btn-deal:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Player Hand Area */
+    .hand-area {
+      min-height: 180px;
+      background: #fafafa;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Discard Drop Zone */
+    .discard-zone {
+      min-height: 200px;
+      background: #fdf2f8;
+      border: 3px dashed #eb7a8d;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
+      position: relative;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .discard-zone.drag-over {
+      background: #fbcfe8;
+      border-color: #db2777;
+    }
+
+    .discard-placeholder {
+      position: absolute;
+      color: #be185d;
+      font-weight: 800;
+      font-size: 1.2rem;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    /* Draggable Card Images */
+    .playing-card {
+      width: 100px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: grab;
+      background-color: #fff;
+    }
+
+    .playing-card:active {
+      cursor: grabbing;
+    }
+
+    /* Event Notification Banner */
+    #eventBanner {
+      display: none;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1.5px solid #bbf7d0;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+  </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">My Classes</a>
+                <ul><li><a href="index.html">COP4813</a></li></ul>
+            </li>
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                    <li><a href="assignment6.html">Assignment 6</a></li>
+                    <li><a href="assignment7.html">Assignment 7</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+      <div class="game-card">
+        <div class="header-section">
+          <span class="badge">HTML5 Drag & Drop</span>
+          <h1>Interactive Poker Interface</h1>
+          <p class="subtitle" style="color: var(--deep-green);">Deal cards to your hand, then drag them to the discard pile to trigger a drop event.</p>
+        </div>
+
+        <div class="table-layout">
+          
+          <!-- Controls -->
+          <div class="controls">
+            <div><strong>Cards Remaining in Deck:</strong> <span id="deckCount">52</span></div>
+            <button id="dealBtn" class="btn-deal">Deal 1 Card</button>
+          </div>
+
+          <!-- Player's Hand -->
+          <div>
+            <h3 style="margin-bottom: 0.5rem; color: #1e3f20;">Your Hand</h3>
+            <div id="playerHand" class="hand-area"></div>
+          </div>
+
+          <!-- Discard Pile (Drop Target) -->
+          <div>
+            <h3 style="margin-bottom: 0.5rem; color: #6e1635;">Discard Pile (Drop Zone)</h3>
+            <div id="discardPile" class="discard-zone">
+              <div id="placeholderText" class="discard-placeholder">Drag cards here to discard</div>
+            </div>
+            <!-- Visible proof of event trigger for grading -->
+            <div id="eventBanner">✅ DROP EVENT TRIGGERED: Card successfully discarded!</div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <script>
+      // 1. Initialize and Shuffle the Deck using new naming scheme
+      let deck = [];
+      const suits = ['S', 'C', 'H', 'D']; 
+      const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+      
+      // Build the 52 card file names (e.g., AS.jpg, 10C.jpg, KD.jpg)
+      for (let s of suits) {
+        for (let r of ranks) {
+          deck.push(r + s + '.jpg');
+        }
+      }
+
+      // Randomize the array (Fisher-Yates shuffle algorithm)
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+
+      // Elements
+      const dealBtn = document.getElementById('dealBtn');
+      const playerHand = document.getElementById('playerHand');
+      const discardPile = document.getElementById('discardPile');
+      const placeholderText = document.getElementById('placeholderText');
+      const deckCount = document.getElementById('deckCount');
+      const eventBanner = document.getElementById('eventBanner');
+
+      // 2. Deal a Card
+      dealBtn.addEventListener('click', () => {
+        if (deck.length === 0) return;
+
+        // Pop the top card from the deck array
+        const cardFile = deck.pop();
+        deckCount.textContent = deck.length;
+
+        // Create the image element
+        const img = document.createElement('img');
+        // Looks inside your 'cards' folder for the images
+        img.src = 'cards/' + cardFile; 
+        img.className = 'playing-card';
+        img.draggable = true;
+        // Assign a unique ID so we know exactly which element is being dragged
+        img.id = 'card_' + Date.now(); 
+
+        // Set alternative text for missing images
+        img.alt = cardFile;
+        img.onerror = function() {
+            this.onerror = null;
+            // Provide a visual placeholder if an image is missing or named incorrectly
+            this.src = 'https://via.placeholder.com/100x140.png?text=' + cardFile;
+        };
+
+        // HTML5 Drag Start Event
+        img.addEventListener('dragstart', (e) => {
+          // Store the ID of the card being dragged
+          e.dataTransfer.setData('text/plain', e.target.id);
+          // Visual effect
+          setTimeout(() => e.target.style.opacity = '0.5', 0);
+        });
+
+        img.addEventListener('dragend', (e) => {
+          e.target.style.opacity = '1'; // Reset opacity when dragging stops
+        });
+
+        playerHand.appendChild(img);
+
+        if (deck.length === 0) {
+          dealBtn.disabled = true;
+          dealBtn.textContent = 'Deck Empty';
+        }
+      });
+
+      // 3. Drop Zone Events
+      // Allow dropping by preventing default behavior
+      discardPile.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      // The discard pile
+      discardPile.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        discardPile.classList.add('drag-over');
+      });
+
+      discardPile.addEventListener('dragleave', (e) => {
+        discardPile.classList.remove('drag-over');
+      });
+
+      // The triggered Drop Event
+      discardPile.addEventListener('drop', (e) => {
+        e.preventDefault();
+        discardPile.classList.remove('drag-over');
+        placeholderText.style.display = 'none';
+
+        // Retrieve the ID of the dragged card
+        const cardId = e.dataTransfer.getData('text/plain');
+        const draggedCard = document.getElementById(cardId);
+
+        if (draggedCard) {
+          // Move the card from the hand to the discard pile
+          discardPile.appendChild(draggedCard);
+
+          // Fulfill assignment requirement: Let the professor know an event triggered!
+          eventBanner.style.display = 'block';
+          
+          // Hide the banner after 2.5 seconds
+          setTimeout(() => {
+            eventBanner.style.display = 'none';
+          }, 2500);
+        }
+      });
+    </script>
+</body>
+</html>
