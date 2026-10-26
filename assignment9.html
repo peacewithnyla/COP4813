@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -54,14 +54,14 @@
       font-weight: 800;
     }
 
-    /* removed the purple background so our custom image shows through nicely */
+    /* canvas area styling */
     canvas {
       border: 3px dashed var(--primary-green, #89bfa3);
       border-radius: 12px;
       margin-top: 1.5rem;
       box-shadow: inset 0 4px 15px rgba(0,0,0,0.4);
       cursor: crosshair;
-      background: #000; /* dark base so the 50% opacity background looks moody */
+      background: #000; /* dark base so the translucent background looks moody */
     }
 
     /* banner that pops up when you click her */
@@ -134,8 +134,9 @@
       const canvas = document.getElementById('animCanvas');
       const ctx = canvas.getContext('2d');
       
-      // smooth out rendering
+      // force high-quality rendering so she doesn't get blurry when scaling up
       ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
 
       // load background image
       const bgImg = new Image();
@@ -152,20 +153,20 @@
       let dy = 1.5;           
       
       // flexible size
-      let currentSize = 160;   // much bigger starting size than before
-      let targetSize = 160;    // what size she should be trying to reach
-      let isSpooked = false;   // flag to track if the click effect is active
+      let currentSize = 160;   
+      let targetSize = 160;    
+      let isSpooked = false;   
 
       // main animation loop
       function draw() {
-        // wipe the canvas clean every frame so it doesn't leave a trail
+        // wipe the canvas clean every frame
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // draw the background image first at 50% opacity
-        ctx.globalAlpha = 0.5;
+        // draw the background image at 80% opacity (less translucent than before)
+        ctx.globalAlpha = 0.8;
         ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
         
-        // reset opacity back to 100% for the rest of the drawing
+        // reset opacity back to 100% for Hello Kitty
         ctx.globalAlpha = 1.0;
 
         // growing/shrinking animation logic
@@ -175,82 +176,4 @@
         // when clicked, flash the background pink
         if (isSpooked) {
           ctx.fillStyle = "rgba(255, 105, 180, 0.2)"; // hot pink flash
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // draw the kitty at the current x, y spot with the flexible size
-        // Note: Using Math.round() prevents sub-pixel rendering blurriness!
-        ctx.drawImage(kittyImg, Math.round(x), Math.round(y), Math.round(currentSize), Math.round(currentSize));
-
-        // bump the coordinates for the next frame
-        x += dx;
-        y += dy;
-
-        // reverse direction left or right
-        // using currentSize so she doesn't glitch through the walls when she grows!
-        if (x + currentSize > canvas.width) {
-          x = canvas.width - currentSize; // push her back inside if she grows too big
-          dx = -dx; 
-        } else if (x < 0) {
-          x = 0;
-          dx = -dx;
-        }
-
-        // reverse direction top or bottom
-        if (y + currentSize > canvas.height) {
-          y = canvas.height - currentSize;
-          dy = -dy; 
-        } else if (y < 0) {
-          y = 0;
-          dy = -dy;
-        }
-
-        // loop
-        requestAnimationFrame(draw);
-      }
-
-      // make sure both images are loaded before starting
-      let imagesLoaded = 0;
-      function checkStart() {
-        imagesLoaded++;
-        if (imagesLoaded === 2) {
-          draw();
-        }
-      }
-
-      bgImg.onload = checkStart;
-      kittyImg.onload = checkStart;
-
-      // handle the mouse click event
-      canvas.addEventListener('click', (event) => {
-        // figure out exactly where the mouse is relative to the canvas
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-
-        // if the click is inside the kitty image bounds, trigger the mega effect
-        if (mouseX >= x && mouseX <= x + currentSize && mouseY >= y && mouseY <= y + currentSize) {
-          
-          // bounce
-          dx = -dx;
-          dy = -dy;
-
-          // make her grow huge!
-          targetSize = 350;
-          isSpooked = true;
-
-          // banner for event success
-          const banner = document.getElementById('eventBanner');
-          banner.style.display = 'block';
-
-          // set a timer to shrink her back down and turn off effects after 2 seconds
-          setTimeout(() => { 
-            targetSize = 160; 
-            isSpooked = false; 
-            banner.style.display = 'none'; 
-          }, 2000);
-        }
-      });
-    </script>
-</body>
-</html>
+          ctx.fillRect(0, 0,
