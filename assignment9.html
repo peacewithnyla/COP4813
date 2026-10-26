@@ -54,7 +54,7 @@
       font-weight: 800;
     }
 
-    /* canvas area styling - removed the black base so it is light again! */
+    /* canvas area styling - white base so the translucent background looks bright */
     canvas {
       background: #ffffff; 
       border: 3px dashed var(--primary-green, #89bfa3);
@@ -120,8 +120,8 @@
         <!-- banner for grading proof -->
         <div id="eventBanner">🔮 MAGIC SPELL CAST!</div>
 
-        <!-- the actual canvas box -->
-        <canvas id="animCanvas" width="800" height="450"></canvas>
+        <!-- shrunk the canvas down so the animation feels a bit tighter -->
+        <canvas id="animCanvas" width="600" height="400"></canvas>
       </div>
     </main>
 
@@ -134,7 +134,7 @@
       const canvas = document.getElementById('animCanvas');
       const ctx = canvas.getContext('2d');
       
-      // force high-quality rendering so she doesn't get blurry when scaling up
+      // force high-quality rendering
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
@@ -152,9 +152,9 @@
       let dx = 1.5;           
       let dy = 1.5;           
       
-      // flexible size
-      let currentSize = 160;   
-      let targetSize = 160;    
+      // flexible size - scaled down to match the smaller canvas
+      let currentSize = 120;   
+      let targetSize = 120;    
       let isSpooked = false;   
 
       // main animation loop
@@ -233,8 +233,8 @@
           dx = -dx;
           dy = -dy;
 
-          // make her grow huge!
-          targetSize = 350;
+          // make her grow to 200px (big enough to notice, small enough to stay crisp!)
+          targetSize = 200;
           isSpooked = true;
 
           // show the banner for event success
@@ -243,7 +243,7 @@
 
           // set a timer to shrink her back down and turn off effects after 2 seconds
           setTimeout(() => { 
-            targetSize = 160; 
+            targetSize = 120; 
             isSpooked = false; 
             banner.style.display = 'none'; 
           }, 2000);
