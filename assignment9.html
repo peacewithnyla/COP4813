@@ -54,13 +54,13 @@
       font-weight: 800;
     }
 
-    /* canvas area styling */
+    /* updated the canvas to a dark, spooky plum/purple color */
     canvas {
-      background: #ffffff;
+      background: #2a1b38;
       border: 3px dashed var(--primary-green, #89bfa3);
       border-radius: 12px;
       margin-top: 1.5rem;
-      box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: inset 0 4px 15px rgba(0,0,0,0.4);
       cursor: crosshair;
     }
 
@@ -114,11 +114,11 @@
     <main>
       <div class="game-card">
         <span class="badge">Canvas Animation</span>
-        <h1>Halloween Kitty Bounce</h1>
-        <p style="color: var(--deep-green); font-weight: 600;">Catch her if you can! Click directly on Hello Kitty to trigger the animation event.</p>
+        <h1>Halloween Hello Kitty Bounce</h1>
+        <p style="color: var(--deep-green); font-weight: 600;">Catch her if you can! Click directly on Hello Kitty to trigger the magic spell.</p>
         
         <!-- banner for grading proof -->
-        <div id="eventBanner">🎃 BOO! You clicked her! Speed increased and direction reversed!</div>
+        <div id="eventBanner">🔮 MAGIC SPELL CAST!</div>
 
         <!-- the actual canvas box -->
         <canvas id="animCanvas" width="800" height="450"></canvas>
@@ -130,55 +130,71 @@
     </footer>
 
     <script>
-      // grab the canvas and set up the 2d context so we can draw
+      // grab the canvas
       const canvas = document.getElementById('animCanvas');
       const ctx = canvas.getContext('2d');
 
-      // load up the hello kitty halloween image
+      // load image
       const kittyImg = new Image();
       kittyImg.src = 'hello kitty halloween.png'; 
 
-      // starting position and speed (x and y)
+      // starting position
       let x = 50;           
       let y = 50;           
-      let dx = 3;           
-      let dy = 3;           
-      const size = 100;     // size of the image on the canvas
-      let isSpooked = false; // flag to track if the click effect is active
+      let dx = 1.5;           
+      let dy = 1.5;           
+      
+      // flexible size
+      let currentSize = 160;   // much bigger starting size than before
+      let targetSize = 160;    // what size she should be trying to reach
+      let isSpooked = false;   // flag to track if the click effect is active
 
-      // the main animation loop that keeps everything moving
+      // main animation loop
       function draw() {
         // wipe the canvas clean every frame so it doesn't leave a trail
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // if she gets clicked, flash the background orange for a spooky effect
+        // growing/shrinking animation logic
+        if (currentSize < targetSize) currentSize += 8; // grow fast
+        if (currentSize > targetSize) currentSize -= 4; // shrink slower
+
+        // when clicked, flash the background pink
         if (isSpooked) {
-          ctx.fillStyle = "rgba(255, 140, 0, 0.2)"; 
+          ctx.fillStyle = "rgba(255, 105, 180, 0.2)"; // hot pink flash
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // draw the kitty at the current x, y spot
-        ctx.drawImage(kittyImg, x, y, size, size);
+        // draw the kitty at the current x, y spot with the flexible size
+        ctx.drawImage(kittyImg, x, y, currentSize, currentSize);
 
         // bump the coordinates for the next frame
         x += dx;
         y += dy;
 
-        // reverse direction if she hits the right or left edges
-        if (x + size > canvas.width || x < 0) {
+        // reverse direction left or right
+        // using currentSize so she doesn't glitch through the walls when she grows!
+        if (x + currentSize > canvas.width) {
+          x = canvas.width - currentSize; // push her back inside if she grows too big
           dx = -dx; 
+        } else if (x < 0) {
+          x = 0;
+          dx = -dx;
         }
 
-        // reverse direction if she hits the bottom or top edges
-        if (y + size > canvas.height || y < 0) {
+        // reverse direction top or bottom
+        if (y + currentSize > canvas.height) {
+          y = canvas.height - currentSize;
           dy = -dy; 
+        } else if (y < 0) {
+          y = 0;
+          dy = -dy;
         }
 
-        // keep the loop going
+        // loop
         requestAnimationFrame(draw);
       }
 
-      // wait until the image is actually loaded before starting the animation
+      // image is loaded before starting
       kittyImg.onload = () => {
         draw();
       };
@@ -190,27 +206,27 @@
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
 
-        // if the click is inside the kitty image bounds, trigger the effects
-        if (mouseX >= x && mouseX <= x + size && mouseY >= y && mouseY <= y + size) {
+        // if the click is inside the kitty image bounds, trigger the mega effect
+        if (mouseX >= x && mouseX <= x + currentSize && mouseY >= y && mouseY <= y + currentSize) {
           
-          // bounce her back the other way
+          // bounce
           dx = -dx;
           dy = -dy;
 
-          // speed her up a little bit to make it harder (but cap it so it doesn't go crazy fast)
-          if (Math.abs(dx) < 12) {
-            dx = dx * 1.2;
-            dy = dy * 1.2;
-          }
-
-          // turn on the orange flash effect
+          // make her grow huge!
+          targetSize = 350;
           isSpooked = true;
-          setTimeout(() => { isSpooked = false; }, 300); // turn off after 300ms
 
-          // show the banner for the professor to see the event worked
+          // show the banner for event success
           const banner = document.getElementById('eventBanner');
           banner.style.display = 'block';
-          setTimeout(() => { banner.style.display = 'none'; }, 2500);
+
+          // set a timer to shrink her back down and turn off effects after 2 seconds
+          setTimeout(() => { 
+            targetSize = 160; 
+            isSpooked = false; 
+            banner.style.display = 'none'; 
+          }, 2000);
         }
       });
     </script>
