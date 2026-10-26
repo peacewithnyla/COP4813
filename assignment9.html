@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 9 - Animation</title>
+  
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)),
+                  url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      max-width: 900px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 2.25rem 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #fdf2f8;
+      color: #db2777;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      border: 1.5px solid #fbcfe8;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      color: var(--heading-dark, #6e1635);
+      margin: 0 0 0.35rem 0;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    /* canvas area styling */
+    canvas {
+      background: #ffffff;
+      border: 3px dashed var(--primary-green, #89bfa3);
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+      cursor: crosshair;
+    }
+
+    /* banner that pops up when you click her */
+    #eventBanner {
+      display: none;
+      background: #ffedd5;
+      color: #c2410c;
+      border: 1.5px solid #fdba74;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">My Classes</a>
+                <ul><li><a href="index.html">COP4813</a></li></ul>
+            </li>
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                    <li><a href="assignment6.html">Assignment 6</a></li>
+                    <li><a href="assignment7.html">Assignment 7</a></li>
+                    <li><a href="assignment9.html">Assignment 9</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+      <div class="game-card">
+        <span class="badge">Canvas Animation</span>
+        <h1>Halloween Kitty Bounce</h1>
+        <p style="color: var(--deep-green); font-weight: 600;">Catch her if you can! Click directly on Hello Kitty to trigger the animation event.</p>
+        
+        <!-- banner for grading proof -->
+        <div id="eventBanner">🎃 BOO! You clicked her! Speed increased and direction reversed!</div>
+
+        <!-- the actual canvas box -->
+        <canvas id="animCanvas" width="800" height="450"></canvas>
+      </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <script>
+      // grab the canvas and set up the 2d context so we can draw
+      const canvas = document.getElementById('animCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // load up the hello kitty halloween image
+      const kittyImg = new Image();
+      kittyImg.src = 'hello kitty halloween.png'; 
+
+      // starting position and speed (x and y)
+      let x = 50;           
+      let y = 50;           
+      let dx = 3;           
+      let dy = 3;           
+      const size = 100;     // size of the image on the canvas
+      let isSpooked = false; // flag to track if the click effect is active
+
+      // the main animation loop that keeps everything moving
+      function draw() {
+        // wipe the canvas clean every frame so it doesn't leave a trail
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // if she gets clicked, flash the background orange for a spooky effect
+        if (isSpooked) {
+          ctx.fillStyle = "rgba(255, 140, 0, 0.2)"; 
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // draw the kitty at the current x, y spot
+        ctx.drawImage(kittyImg, x, y, size, size);
+
+        // bump the coordinates for the next frame
+        x += dx;
+        y += dy;
+
+        // reverse direction if she hits the right or left edges
+        if (x + size > canvas.width || x < 0) {
+          dx = -dx; 
+        }
+
+        // reverse direction if she hits the bottom or top edges
+        if (y + size > canvas.height || y < 0) {
+          dy = -dy; 
+        }
+
+        // keep the loop going
+        requestAnimationFrame(draw);
+      }
+
+      // wait until the image is actually loaded before starting the animation
+      kittyImg.onload = () => {
+        draw();
+      };
+
+      // handle the mouse click event
+      canvas.addEventListener('click', (event) => {
+        // figure out exactly where the mouse is relative to the canvas
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // if the click is inside the kitty image bounds, trigger the effects
+        if (mouseX >= x && mouseX <= x + size && mouseY >= y && mouseY <= y + size) {
+          
+          // bounce her back the other way
+          dx = -dx;
+          dy = -dy;
+
+          // speed her up a little bit to make it harder (but cap it so it doesn't go crazy fast)
+          if (Math.abs(dx) < 12) {
+            dx = dx * 1.2;
+            dy = dy * 1.2;
+          }
+
+          // turn on the orange flash effect
+          isSpooked = true;
+          setTimeout(() => { isSpooked = false; }, 300); // turn off after 300ms
+
+          // show the banner for the professor to see the event worked
+          const banner = document.getElementById('eventBanner');
+          banner.style.display = 'block';
+          setTimeout(() => { banner.style.display = 'none'; }, 2500);
+        }
+      });
+    </script>
+</body>
+</html>
