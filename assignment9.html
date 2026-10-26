@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -54,14 +54,14 @@
       font-weight: 800;
     }
 
-    /* updated the canvas to a dark, spooky plum/purple color */
+    /* removed the purple background so our custom image shows through nicely */
     canvas {
-      background: #2a1b38;
       border: 3px dashed var(--primary-green, #89bfa3);
       border-radius: 12px;
       margin-top: 1.5rem;
       box-shadow: inset 0 4px 15px rgba(0,0,0,0.4);
       cursor: crosshair;
+      background: #000; /* dark base so the 50% opacity background looks moody */
     }
 
     /* banner that pops up when you click her */
@@ -133,8 +133,15 @@
       // grab the canvas
       const canvas = document.getElementById('animCanvas');
       const ctx = canvas.getContext('2d');
+      
+      // smooth out rendering
+      ctx.imageSmoothingEnabled = true;
 
-      // load image
+      // load background image
+      const bgImg = new Image();
+      bgImg.src = 'assignment9 background.png'; 
+
+      // load kitty image
       const kittyImg = new Image();
       kittyImg.src = 'hello kitty halloween.png'; 
 
@@ -154,6 +161,13 @@
         // wipe the canvas clean every frame so it doesn't leave a trail
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        // draw the background image first at 50% opacity
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        
+        // reset opacity back to 100% for the rest of the drawing
+        ctx.globalAlpha = 1.0;
+
         // growing/shrinking animation logic
         if (currentSize < targetSize) currentSize += 8; // grow fast
         if (currentSize > targetSize) currentSize -= 4; // shrink slower
@@ -165,7 +179,8 @@
         }
 
         // draw the kitty at the current x, y spot with the flexible size
-        ctx.drawImage(kittyImg, x, y, currentSize, currentSize);
+        // Note: Using Math.round() prevents sub-pixel rendering blurriness!
+        ctx.drawImage(kittyImg, Math.round(x), Math.round(y), Math.round(currentSize), Math.round(currentSize));
 
         // bump the coordinates for the next frame
         x += dx;
@@ -194,10 +209,17 @@
         requestAnimationFrame(draw);
       }
 
-      // image is loaded before starting
-      kittyImg.onload = () => {
-        draw();
-      };
+      // make sure both images are loaded before starting
+      let imagesLoaded = 0;
+      function checkStart() {
+        imagesLoaded++;
+        if (imagesLoaded === 2) {
+          draw();
+        }
+      }
+
+      bgImg.onload = checkStart;
+      kittyImg.onload = checkStart;
 
       // handle the mouse click event
       canvas.addEventListener('click', (event) => {
@@ -217,7 +239,7 @@
           targetSize = 350;
           isSpooked = true;
 
-          // show the banner for event success
+          // banner for event success
           const banner = document.getElementById('eventBanner');
           banner.style.display = 'block';
 
