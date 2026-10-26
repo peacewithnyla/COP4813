@@ -176,4 +176,79 @@
         // when clicked, flash the background pink
         if (isSpooked) {
           ctx.fillStyle = "rgba(255, 105, 180, 0.2)"; // hot pink flash
-          ctx.fillRect(0, 0,
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // draw the kitty at the current x, y spot with the flexible size
+        // Math.round() prevents sub-pixel blurring when moving
+        ctx.drawImage(kittyImg, Math.round(x), Math.round(y), Math.round(currentSize), Math.round(currentSize));
+
+        // bump the coordinates for the next frame
+        x += dx;
+        y += dy;
+
+        // reverse direction left or right
+        if (x + currentSize > canvas.width) {
+          x = canvas.width - currentSize; 
+          dx = -dx; 
+        } else if (x < 0) {
+          x = 0;
+          dx = -dx;
+        }
+
+        // reverse direction top or bottom
+        if (y + currentSize > canvas.height) {
+          y = canvas.height - currentSize;
+          dy = -dy; 
+        } else if (y < 0) {
+          y = 0;
+          dy = -dy;
+        }
+
+        // loop
+        requestAnimationFrame(draw);
+      }
+
+      // make sure both images are loaded before starting
+      let imagesLoaded = 0;
+      function checkStart() {
+        imagesLoaded++;
+        if (imagesLoaded === 2) {
+          draw();
+        }
+      }
+
+      bgImg.onload = checkStart;
+      kittyImg.onload = checkStart;
+
+      // handle the mouse click event
+      canvas.addEventListener('click', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // if the click is inside the kitty image bounds
+        if (mouseX >= x && mouseX <= x + currentSize && mouseY >= y && mouseY <= y + currentSize) {
+          
+          dx = -dx;
+          dy = -dy;
+
+          // make her grow huge!
+          targetSize = 350;
+          isSpooked = true;
+
+          // show the banner for event success
+          const banner = document.getElementById('eventBanner');
+          banner.style.display = 'block';
+
+          // set a timer to shrink her back down and turn off effects after 2 seconds
+          setTimeout(() => { 
+            targetSize = 160; 
+            isSpooked = false; 
+            banner.style.display = 'none'; 
+          }, 2000);
+        }
+      });
+    </script>
+</body>
+</html>
