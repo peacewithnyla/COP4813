@@ -136,7 +136,6 @@
       
       // force high-quality rendering so she doesn't get blurry when scaling up
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
 
       // load background image
       const bgImg = new Image();
@@ -162,12 +161,12 @@
         // wipe the canvas clean every frame
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // draw the background image at 80% opacity (less translucent than before)
-        ctx.globalAlpha = 0.8;
-        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-        
-        // reset opacity back to 100% for Hello Kitty
-        ctx.globalAlpha = 1.0;
+        // only draw the background if it has finished loading
+        if (bgImg.complete) {
+          ctx.globalAlpha = 0.8; // slightly translucent
+          ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+          ctx.globalAlpha = 1.0; // reset opacity back to 100% for Hello Kitty
+        }
 
         // growing/shrinking animation logic
         if (currentSize < targetSize) currentSize += 8; // grow fast
@@ -209,17 +208,11 @@
         requestAnimationFrame(draw);
       }
 
-      // make sure both images are loaded before starting
-      let imagesLoaded = 0;
-      function checkStart() {
-        imagesLoaded++;
-        if (imagesLoaded === 2) {
-          draw();
-        }
-      }
-
-      bgImg.onload = checkStart;
-      kittyImg.onload = checkStart;
+      // Start the animation as soon as the Kitty image is loaded
+      // (This is exactly how you originally had it!)
+      kittyImg.onload = () => {
+        draw();
+      };
 
       // handle the mouse click event
       canvas.addEventListener('click', (event) => {
