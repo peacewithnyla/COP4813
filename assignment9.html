@@ -54,14 +54,14 @@
       font-weight: 800;
     }
 
-    /* canvas area styling */
+    /* canvas area styling - removed the black base so it is light again! */
     canvas {
+      background: #ffffff; 
       border: 3px dashed var(--primary-green, #89bfa3);
       border-radius: 12px;
       margin-top: 1.5rem;
-      box-shadow: inset 0 4px 15px rgba(0,0,0,0.4);
+      box-shadow: inset 0 4px 15px rgba(0,0,0,0.1);
       cursor: crosshair;
-      background: #000; /* dark base so the translucent background looks moody */
     }
 
     /* banner that pops up when you click her */
@@ -136,6 +136,7 @@
       
       // force high-quality rendering so she doesn't get blurry when scaling up
       ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
 
       // load background image
       const bgImg = new Image();
@@ -161,12 +162,12 @@
         // wipe the canvas clean every frame
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // only draw the background if it has finished loading
-        if (bgImg.complete) {
-          ctx.globalAlpha = 0.8; // slightly translucent
-          ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-          ctx.globalAlpha = 1.0; // reset opacity back to 100% for Hello Kitty
-        }
+        // draw the background image at 60% opacity so it is light and translucent
+        ctx.globalAlpha = 0.6;
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        
+        // reset opacity back to 100% for Hello Kitty
+        ctx.globalAlpha = 1.0;
 
         // growing/shrinking animation logic
         if (currentSize < targetSize) currentSize += 8; // grow fast
@@ -208,11 +209,17 @@
         requestAnimationFrame(draw);
       }
 
-      // Start the animation as soon as the Kitty image is loaded
-      // (This is exactly how you originally had it!)
-      kittyImg.onload = () => {
-        draw();
-      };
+      // make sure both images are loaded before starting
+      let imagesLoaded = 0;
+      function checkStart() {
+        imagesLoaded++;
+        if (imagesLoaded === 2) {
+          draw();
+        }
+      }
+
+      bgImg.onload = checkStart;
+      kittyImg.onload = checkStart;
 
       // handle the mouse click event
       canvas.addEventListener('click', (event) => {
