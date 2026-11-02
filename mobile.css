@@ -1,0 +1,85 @@
+/* mobile.css - Applied only on mobile devices */
+
+/* Adjust the main body and layout margins for small screens */
+body {
+    padding: 10px;
+    font-size: 16px; /* Larger base font for readability */
+}
+
+header {
+    text-align: center;
+    padding: 1rem;
+}
+
+header h1 {
+    font-size: 1.8rem;
+}
+
+/* Adjust your content cards to use full width on mobile */
+.game-card, .content-card {
+    width: 100%;
+    margin: 1rem auto;
+    padding: 1.5rem 1rem;
+    box-sizing: border-box;
+}
+
+/* 
+  MOBILE NAVIGATION OVERHAUL
+  Transforms the horizontal hover menu into a vertical, touch-friendly block list 
+*/
+nav[aria-label="Main Navigation"] {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 1rem;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    padding: 0;
+    margin: 0;
+    gap: 8px;
+}
+
+nav ul li {
+    width: 100%;
+    position: relative;
+}
+
+/* Style the main touch targets to be larger */
+nav ul li a {
+    display: block;
+    padding: 12px 15px;
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 8px;
+    color: #db2777;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+/* 
+  Force dropdown menus to stay open on mobile. 
+  Since phones don't have a "hover" state, nesting them statically underneath 
+  their parent category is the best practice for accessibility.
+*/
+nav ul li ul {
+    display: block; /* Overrides the display:none from desktop */
+    position: static; /* Overrides absolute positioning so it doesn't float over text */
+    background: transparent;
+    box-shadow: none;
+    padding-top: 5px;
+    border: none;
+}
+
+/* Make nested submenu items slightly smaller and distinct */
+nav ul li ul li a {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    color: #6e1635;
+    font-size: 0.9rem;
+    padding: 10px;
+    margin-bottom: 4px;
+}

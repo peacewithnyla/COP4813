@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 10 - Mobile Ready</title>
+  
+  <link rel="stylesheet" href="theme.css" />
+  <!-- This second CSS file ONLY loads if the screen is mobile -->
+  <link rel="stylesheet" href="mobile.css" media="screen and (max-width: 768px)" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; 
+      padding: 0; 
+      line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)), url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96); 
+      backdrop-filter: blur(6px);
+      max-width: 900px; 
+      width: 100%; 
+      margin: 2.5rem auto; 
+      padding: 2.25rem 2rem;
+      border-radius: 18px; 
+      border: 2px solid var(--primary-green, #89bfa3); 
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .audit-img {
+      max-width: 100%; 
+      height: auto; 
+      border: 2px solid #ddd; 
+      border-radius: 8px; 
+      margin: 15px 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1, h2, h3 {
+      color: var(--heading-dark, #6e1635);
+    }
+  </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">My Classes</a>
+                <ul><li><a href="index.html">COP4813</a></li></ul>
+            </li>
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                    <li><a href="assignment6.html">Assignment 6</a></li>
+                    <li><a href="assignment7.html">Assignment 7</a></li>
+                    <li><a href="assignment9.html">Assignment 9</a></li>
+                    <li><a href="assignment10.html">Assignment 10</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+      <div class="game-card">
+        <h1>Assignment 10: Mobile Ready & Lighthouse Audit</h1>
+        <p>For this assignment, I implemented a mobile version of my home page using a secondary CSS file (<code>mobile.css</code>) that activates via media queries on screens 768px or smaller. It converts my navigation into a touch-friendly block format.</p>
+        
+        <hr style="border: 1px solid #fbcfe8; margin: 20px 0;">
+
+        <h2 style="color: #89bfa3;">Lighthouse Audit Results</h2>
+        
+        <p>Below are the overall scores and specific details for my site's Performance, Accessibility, Best Practices, and SEO on a mobile device:</p>
+        
+        <!-- The image source is now set directly to your upcoming mobilereport.jpg file -->
+        <img src="mobilereport.jpg" alt="Lighthouse Mobile Audit Report" class="audit-img">
+
+        <h3>My Analysis</h3>
+        <p>
+            <em>(Write 2-3 sentences here about your scores once you run the audit. For example: "My accessibility score was high because I used proper alt tags on my images. To improve my performance score in the future, I could compress my background images so they load faster on mobile connections.")</em>
+        </p>
+      </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px;">
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+</body>
+</html>
