@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 11 - Dynamic Objects</title>
+  
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0; line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)), url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px);
+      max-width: 1000px; width: 100%; margin: 2.5rem auto; padding: 2.25rem 2rem;
+      border-radius: 18px; border: 2px solid var(--primary-green, #89bfa3); 
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    h1, h2, h3 { color: var(--heading-dark, #6e1635); text-align: center; }
+
+    /* Drag and Drop Grid System */
+    .kanban-board {
+      display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;
+    }
+
+    .column {
+      flex: 1; min-width: 260px;
+      background: #ffffff;
+      border: 2px solid #89bfa3;
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+    }
+
+    .column-header {
+      background: #89bfa3; color: white; padding: 10px;
+      text-align: center; font-weight: bold; border-radius: 9px 9px 0 0;
+    }
+
+    .drop-zone {
+      flex-grow: 1; padding: 15px; min-height: 400px;
+      transition: background-color 0.3s;
+    }
+
+    .drop-zone.drag-hover { background-color: #fdf2f8; }
+
+    /* Dynamically Generated Course Cards */
+    .course-card {
+      background: #ffffff; border: 2px solid #fbcfe8;
+      border-radius: 8px; padding: 12px; margin-bottom: 12px;
+      cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    .course-card:active { cursor: grabbing; transform: scale(0.98); }
+    
+    .course-id { font-weight: bold; color: #db2777; font-size: 1.1rem; }
+    .course-title { font-weight: 600; color: #333; }
+    .course-note { 
+      font-size: 0.85em; color: #666; margin-top: 8px; 
+      padding-top: 8px; border-top: 1px dashed #fbcfe8; 
+    }
+
+    /* Status Classes assigned via JavaScript */
+    .course-card.locked {
+      background: #f8f9fa; border-color: #ccc;
+      cursor: not-allowed; opacity: 0.6;
+    }
+    .course-card.locked .course-id { color: #999; }
+    
+    .course-card.disabled {
+      background: #ffe3e3; border-color: #ffb3b3;
+      cursor: not-allowed; opacity: 0.5;
+    }
+    .course-card.disabled .course-title { text-decoration: line-through; }
+    
+    .status-msg { font-size: 0.8em; font-weight: bold; margin-top: 5px; }
+    .locked-msg { color: #d9534f; }
+    .disabled-msg { color: #c9302c; }
+  </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">My Classes</a>
+                <ul><li><a href="index.html">COP4813</a></li></ul>
+            </li>
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                    <li><a href="assignment6.html">Assignment 6</a></li>
+                    <li><a href="assignment7.html">Assignment 7</a></li>
+                    <li><a href="assignment9.html">Assignment 9</a></li>
+                    <li><a href="assignment10.html">Assignment 10</a></li>
+                    <li><a href="assignment11.html">Assignment 11</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+      <div class="game-card">
+        <h1>Paralegal Studies Course Advisor</h1>
+        <p style="text-align: center;">Drag and drop courses between the columns to build your degree plan.</p>
+        
+        <div class="kanban-board">
+          
+          <div class="column">
+            <div class="column-header">Available Courses</div>
+            <div class="drop-zone" id="zone-available" 
+                 ondrop="drop(event, 'available')" 
+                 ondragover="allowDrop(event)" 
+                 ondragenter="dragEnter(event)" 
+                 ondragleave="dragLeave(event)">
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="column-header" style="background:#db2777;">Planned Schedule</div>
+            <div class="drop-zone" id="zone-planned" 
+                 ondrop="drop(event, 'planned')" 
+                 ondragover="allowDrop(event)" 
+                 ondragenter="dragEnter(event)" 
+                 ondragleave="dragLeave(event)">
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="column-header" style="background:#6e1635;">Previously Taken</div>
+            <div class="drop-zone" id="zone-taken" 
+                 ondrop="drop(event, 'taken')" 
+                 ondragover="allowDrop(event)" 
+                 ondragenter="dragEnter(event)" 
+                 ondragleave="dragLeave(event)">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <script>
+      // 1. JSON Data Structure for Paralegal Studies A.S.
+      const catalogJSON = [
+        { id: "ENC1101", title: "Introduction to Composition", credits: 3, prereqs: [], orGroup: null, note: "Required General Education course." },
+        { id: "PLA1003", title: "Introduction to Law", credits: 3, prereqs: [], orGroup: null, note: "Core legal course. Essential foundation." },
+        { id: "LIT2110", title: "Masterpieces of World Lit I", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120, but do not need to take both." },
+        { id: "LIT2120", title: "Masterpieces of World Lit II", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120, but do not need to take both." },
+        { id: "PLA1104", title: "Legal Research", credits: 3, prereqs: ["PLA1003", ["LIT2110", "LIT2120"]], orGroup: null, note: "Requires Intro to Law AND (LIT2110 OR LIT2120) to be completed first." },
+        { id: "PLA2114", title: "Legal Writing", credits: 3, prereqs: ["PLA1104"], orGroup: null, note: "Requires Legal Research as a prerequisite." }
+      ];
+
+      // Track the location of each course ('available', 'planned', 'taken')
+      let studentState = {};
+      catalogJSON.forEach(c => { studentState[c.id] = "available"; });
+
+      // 2. Dynamic Interface Creation & Evaluation
+      function renderBoard() {
+        const takenCourses = Object.keys(studentState).filter(id => studentState[id] === "taken");
+        const plannedCourses = Object.keys(studentState).filter(id => studentState[id] === "planned");
+        
+        // Find out which "OR" groups are already fulfilled by taken courses
+        const takenGroups = takenCourses.map(id => catalogJSON.find(c => c.id === id).orGroup).filter(g => g !== null);
+
+        document.getElementById("zone-available").innerHTML = "";
+        document.getElementById("zone-planned").innerHTML = "";
+        document.getElementById("zone-taken").innerHTML = "";
+        
+        catalogJSON.forEach(course => {
+            let isPrereqMet = true;
+            
+            // Check prerequisites
+            course.prereqs.forEach(req => {
+                if (Array.isArray(req)) {
+                   // Evaluate OR requirement
+                   if (!req.some(r => takenCourses.includes(r))) isPrereqMet = false;
+                } else {
+                   // Evaluate AND requirement
+                   if (!takenCourses.includes(req)) isPrereqMet = false;
+                }
+            });
+            
+            // Check if course should be disabled because its "OR" alternative was taken
+            let isDisabledByOrGroup = course.orGroup && takenGroups.includes(course.orGroup) && !takenCourses.includes(course.id);
+            
+            // Generate DOM Element
+            let card = document.createElement('div');
+            card.className = "course-card";
+            card.id = course.id;
+            
+            card.innerHTML = `
+                <div class="course-id">${course.id}</div>
+                <div class="course-title">${course.title} (${course.credits} cr)</div>
+                <div class="course-note">${course.note}</div>
+            `;
+            
+            if (studentState[course.id] === "taken") {
+                card.draggable = true;
+                card.ondragstart = drag;
+                document.getElementById("zone-taken").appendChild(card);
+            } else if (studentState[course.id] === "planned") {
+                card.draggable = true;
+                card.ondragstart = drag;
+                document.getElementById("zone-planned").appendChild(card);
+            } else {
+                // Course is in the 'available' column. Determine its status.
+                if (isDisabledByOrGroup) {
+                    card.classList.add("disabled");
+                    card.innerHTML += `<div class="status-msg disabled-msg">⚠ Disabled: You already took an alternative course for this requirement.</div>`;
+                    document.getElementById("zone-available").appendChild(card);
+                } else if (!isPrereqMet) {
+                    card.classList.add("locked");
+                    card.innerHTML += `<div class="status-msg locked-msg">🔒 Locked: Complete prerequisites in 'Taken' column first.</div>`;
+                    document.getElementById("zone-available").appendChild(card);
+                } else {
+                    card.draggable = true;
+                    card.ondragstart = drag;
+                    document.getElementById("zone-available").appendChild(card);
+                }
+            }
+        });
+      }
+
+      // 3. Drag and Drop Event Handling
+      function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+      function allowDrop(ev) { ev.preventDefault(); }
+      function dragEnter(ev) { ev.currentTarget.classList.add('drag-hover'); }
+      function dragLeave(ev) { ev.currentTarget.classList.remove('drag-hover'); }
+      
+      function drop(ev, category) {
+          ev.preventDefault();
+          ev.currentTarget.classList.remove('drag-hover');
+          let data = ev.dataTransfer.getData("text");
+          
+          if(data) {
+              studentState[data] = category;
+              
+              // Failsafe: If a user moves a prereq OUT of 'taken', kick dependent courses out of 'planned' or 'taken' back to 'available'
+              let changed = true;
+              while (changed) {
+                  changed = false;
+                  let taken = Object.keys(studentState).filter(id => studentState[id] === "taken");
+                  catalogJSON.forEach(c => {
+                      if (studentState[c.id] !== "available") {
+                          let isPrereqMet = true;
+                          c.prereqs.forEach(req => {
+                              if (Array.isArray(req)) {
+                                  if (!req.some(r => taken.includes(r))) isPrereqMet = false;
+                              } else {
+                                  if (!taken.includes(req)) isPrereqMet = false;
+                              }
+                          });
+                          if (!isPrereqMet) {
+                              studentState[c.id] = "available";
+                              changed = true; // Rerun loop in case of chain reactions
+                          }
+                      }
+                  });
+              }
+              renderBoard();
+          }
+      }
+
+      // Start the application
+      renderBoard();
+    </script>
+</body>
+</html>
