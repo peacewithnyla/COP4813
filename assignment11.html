@@ -83,6 +83,12 @@
     .status-msg { font-size: 0.8em; font-weight: bold; margin-top: 5px; }
     .locked-msg { color: #d9534f; }
     .disabled-msg { color: #c9302c; }
+
+    /* Summary Panel */
+    .summary-panel {
+      margin-top: 25px; padding: 20px; background: #ffffff; 
+      border: 2px dashed #fbcfe8; border-radius: 12px;
+    }
   </style>
 </head>
 <body>
@@ -159,6 +165,18 @@
           </div>
 
         </div>
+
+        <!-- NEW: Dynamic Enrollment Summary Panel -->
+        <div class="summary-panel">
+            <h3 style="margin-top: 0; color: #db2777;">🎓 Enrollment & Plan Summary</h3>
+            <p><strong>Credits Completed:</strong> <span id="credits-taken">0</span></p>
+            <p><strong>Credits Planned:</strong> <span id="credits-planned">0</span></p>
+            <p>
+              <strong>Current Enrollment Options:</strong> <span id="enrollment-options" style="font-weight:bold; color:#89bfa3;">None</span> 
+              <br><em style="font-size: 0.85em; color: #666;">(These are the courses you are currently eligible to take based on your completed prerequisites in the 'Previously Taken' column)</em>
+            </p>
+        </div>
+
       </div>
     </main>
 
@@ -170,11 +188,18 @@
       // 1. JSON Data Structure for Paralegal Studies A.S.
       const catalogJSON = [
         { id: "ENC1101", title: "Introduction to Composition", credits: 3, prereqs: [], orGroup: null, note: "Required General Education course." },
+        { id: "ENC1102", title: "Writing with Research", credits: 3, prereqs: ["ENC1101"], orGroup: null, note: "Builds on ENC1101." },
+        { id: "MGF2130", title: "Mathematical Thinking", credits: 3, prereqs: [], orGroup: null, note: "Core Math requirement." },
+        { id: "BUL2241", title: "Business Law I", credits: 3, prereqs: [], orGroup: null, note: "Introduction to business legalities." },
+        { id: "BUL2242", title: "Business Law II", credits: 3, prereqs: ["BUL2241"], orGroup: null, note: "Requires Business Law I." },
         { id: "PLA1003", title: "Introduction to Law", credits: 3, prereqs: [], orGroup: null, note: "Core legal course. Essential foundation." },
-        { id: "LIT2110", title: "Masterpieces of World Lit I", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120, but do not need to take both." },
-        { id: "LIT2120", title: "Masterpieces of World Lit II", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120, but do not need to take both." },
-        { id: "PLA1104", title: "Legal Research", credits: 3, prereqs: ["PLA1003", ["LIT2110", "LIT2120"]], orGroup: null, note: "Requires Intro to Law AND (LIT2110 OR LIT2120) to be completed first." },
-        { id: "PLA2114", title: "Legal Writing", credits: 3, prereqs: ["PLA1104"], orGroup: null, note: "Requires Legal Research as a prerequisite." }
+        { id: "LIT2110", title: "Masterpieces of World Lit I", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120." },
+        { id: "LIT2120", title: "Masterpieces of World Lit II", credits: 3, prereqs: ["ENC1101"], orGroup: "LIT_REQ", note: "Students must select LIT2110 OR LIT2120." },
+        { id: "PLA1104", title: "Legal Research", credits: 3, prereqs: ["PLA1003", ["LIT2110", "LIT2120"]], orGroup: null, note: "Requires Intro to Law AND (LIT2110 OR LIT2120)." },
+        { id: "PLA2114", title: "Legal Writing", credits: 3, prereqs: ["PLA1104"], orGroup: null, note: "Requires Legal Research." },
+        { id: "PLA2610", title: "Property Law", credits: 3, prereqs: ["PLA1003"], orGroup: null, note: "Requires Intro to Law." },
+        { id: "PLA2800", title: "Family Law", credits: 3, prereqs: ["PLA1003"], orGroup: null, note: "Requires Intro to Law." },
+        { id: "PLA2201", title: "Civil Litigation", credits: 3, prereqs: ["PLA1003"], orGroup: null, note: "Requires Intro to Law." }
       ];
 
       // Track the location of each course ('available', 'planned', 'taken')
@@ -189,20 +214,24 @@
         // Find out which "OR" groups are already fulfilled by taken courses
         const takenGroups = takenCourses.map(id => catalogJSON.find(c => c.id === id).orGroup).filter(g => g !== null);
 
+        // Reset columns
         document.getElementById("zone-available").innerHTML = "";
         document.getElementById("zone-planned").innerHTML = "";
         document.getElementById("zone-taken").innerHTML = "";
         
+        // Variables for our new Enrollment Summary feature
+        let creditsTaken = 0;
+        let creditsPlanned = 0;
+        let enrollmentOptions = [];
+
         catalogJSON.forEach(course => {
             let isPrereqMet = true;
             
-            // Check prerequisites
+            // Check prerequisites (handles both AND and OR arrays)
             course.prereqs.forEach(req => {
                 if (Array.isArray(req)) {
-                   // Evaluate OR requirement
                    if (!req.some(r => takenCourses.includes(r))) isPrereqMet = false;
                 } else {
-                   // Evaluate AND requirement
                    if (!takenCourses.includes(req)) isPrereqMet = false;
                 }
             });
@@ -217,15 +246,18 @@
             
             card.innerHTML = `
                 <div class="course-id">${course.id}</div>
-                <div class="course-title">${course.title} (${course.credits} cr)</div>
+                <div class="course-title">${course.title} (${course.credits} credit hours)</div>
                 <div class="course-note">${course.note}</div>
             `;
             
+            // Assign card to column and calculate credits
             if (studentState[course.id] === "taken") {
+                creditsTaken += course.credits;
                 card.draggable = true;
                 card.ondragstart = drag;
                 document.getElementById("zone-taken").appendChild(card);
             } else if (studentState[course.id] === "planned") {
+                creditsPlanned += course.credits;
                 card.draggable = true;
                 card.ondragstart = drag;
                 document.getElementById("zone-planned").appendChild(card);
@@ -240,12 +272,19 @@
                     card.innerHTML += `<div class="status-msg locked-msg">🔒 Locked: Complete prerequisites in 'Taken' column first.</div>`;
                     document.getElementById("zone-available").appendChild(card);
                 } else {
+                    // Prereqs are met! This is a valid enrollment option.
+                    enrollmentOptions.push(course.id);
                     card.draggable = true;
                     card.ondragstart = drag;
                     document.getElementById("zone-available").appendChild(card);
                 }
             }
         });
+
+        // Update the Enrollment Summary Panel text dynamically
+        document.getElementById("credits-taken").innerText = creditsTaken;
+        document.getElementById("credits-planned").innerText = creditsPlanned;
+        document.getElementById("enrollment-options").innerText = enrollmentOptions.length > 0 ? enrollmentOptions.join(", ") : "None at this time.";
       }
 
       // 3. Drag and Drop Event Handling
