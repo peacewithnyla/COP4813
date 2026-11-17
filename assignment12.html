@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 12 - CMS Review</title>
+  
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0; line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)), url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px);
+      max-width: 1200px; width: 100%; margin: 2.5rem auto; padding: 2.25rem 2rem;
+      border-radius: 18px; border: 2px solid var(--primary-green, #89bfa3); 
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    h1, h2, h3 { color: var(--heading-dark, #6e1635); text-align: center; }
+
+    /* Dynamic Table Styling */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    th {
+      background: #89bfa3;
+      color: white;
+      text-align: left;
+      padding: 15px;
+      font-weight: bold;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #fbcfe8;
+      vertical-align: top;
+      color: #333;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    
+    tr:hover { background-color: #fdf2f8; }
+
+    ul { margin: 0; padding-left: 20px; }
+    li { margin-bottom: 5px; font-size: 0.9em; }
+
+    a.cms-link {
+      color: #db2777;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.cms-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nyla Webb</h1>
+        <p>Information Technology Portfolio</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">My Classes</a>
+                <ul><li><a href="index.html">COP4813</a></li></ul>
+            </li>
+            <li><a href="#">My Assignments</a>
+                <ul>
+                    <li><a href="assignment1.html">Assignment 1</a></li>
+                    <li><a href="index.html">Assignment 2</a></li>
+                    <li><a href="assignment3.html">Assignment 3</a></li>
+                    <li><a href="assignment4.html">Assignment 4</a></li>
+                    <li><a href="assignment5.html">Assignment 5</a></li>
+                    <li><a href="assignment6.html">Assignment 6</a></li>
+                    <li><a href="assignment7.html">Assignment 7</a></li>
+                    <li><a href="assignment9.html">Assignment 9</a></li>
+                    <li><a href="assignment10.html">Assignment 10</a></li>
+                    <li><a href="assignment11.html">Assignment 11</a></li>
+                    <li><a href="assignment12.html">Assignment 12</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Nyla's Sites</a>
+                <ul>
+                    <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+      <div class="game-card">
+        <h1>Content Management Systems (CMS) Review</h1>
+        <p style="text-align: center;">The table below is dynamically generated using JavaScript by fetching data from an external <code>cms_data.json</code> file.</p>
+        
+        <div class="table-responsive">
+            <table id="cms-table">
+                <thead>
+                    <tr>
+                        <th>System Name</th>
+                        <th>Produced/Sold By</th>
+                        <th>Technology Base</th>
+                        <th>Major Capabilities</th>
+                        <th>Major Limitations</th>
+                        <th>Example Site</th>
+                    </tr>
+                </thead>
+                <tbody id="cms-body">
+                    <!-- JSON Data will be injected here via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+    </footer>
+
+    <!-- JavaScript to fetch JSON and build the table -->
+    <script>
+      // Fetch the external JSON file
+      fetch('cms_data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok. If you are viewing this locally, CORS policy may block the fetch command until pushed to GitHub.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tableBody = document.getElementById('cms-body');
+            
+            // Loop through each CMS in the JSON array
+            data.forEach(cms => {
+                // Create list items for capabilities array
+                let capabilitiesList = "";
+                cms.capabilities.forEach(item => {
+                    capabilitiesList += `<li>${item}</li>`;
+                });
+
+                // Create list items for limitations array
+                let limitationsList = "";
+                cms.limitations.forEach(item => {
+                    limitationsList += `<li>${item}</li>`;
+                });
+
+                // Create a new table row for the CMS
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:bold; color:#6e1635;">${cms.name}</td>
+                    <td>${cms.support}</td>
+                    <td>${cms.technology}</td>
+                    <td><ul>${capabilitiesList}</ul></td>
+                    <td><ul>${limitationsList}</ul></td>
+                    <td><a class="cms-link" href="${cms.exampleSite}" target="_blank">View Site</a></td>
+                `;
+                
+                // Add the row to the table body
+                tableBody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching JSON data:', error);
+            document.getElementById('cms-body').innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Data could not be loaded. Please ensure you are viewing this via GitHub Pages or a local server.</td></tr>`;
+        });
+    </script>
+</body>
+</html>

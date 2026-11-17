@@ -1,0 +1,78 @@
+[
+  {
+    "name": "WordPress",
+    "support": "Open Source (Supported by Automattic & Community)",
+    "technology": "PHP / MySQL or MariaDB",
+    "capabilities": [
+      "Massive ecosystem of themes",
+      "Over 50,000 plugins available",
+      "Highly customizable via Public API"
+    ],
+    "limitations": [
+      "Vulnerable to security breaches via third-party plugins",
+      "Requires frequent manual updates"
+    ],
+    "exampleSite": "https://www.whitehouse.gov/"
+  },
+  {
+    "name": "Shopify",
+    "support": "Proprietary (Sold by Shopify Inc.)",
+    "technology": "Ruby on Rails / MySQL",
+    "capabilities": [
+      "Built-in e-commerce processing",
+      "Managed hosting and security",
+      "24/7 customer support"
+    ],
+    "limitations": [
+      "Monthly subscription costs and transaction fees",
+      "Uses proprietary 'Liquid' code, limiting deep customization"
+    ],
+    "exampleSite": "https://www.gymshark.com/"
+  },
+  {
+    "name": "Drupal",
+    "support": "Open Source (Supported by Drupal Association)",
+    "technology": "PHP / MySQL, PostgreSQL, or SQLite",
+    "capabilities": [
+      "Enterprise-level security",
+      "Handles highly complex data structures",
+      "Excellent scalability for high-traffic sites"
+    ],
+    "limitations": [
+      "Steep learning curve for beginners",
+      "Requires developer knowledge to set up properly"
+    ],
+    "exampleSite": "https://www.tesla.com/"
+  },
+  {
+    "name": "Squarespace",
+    "support": "Proprietary (Sold by Squarespace, Inc.)",
+    "technology": "Java / Custom JS and CSS",
+    "capabilities": [
+      "Intuitive drag-and-drop builder",
+      "Beautiful, award-winning built-in templates",
+      "All-in-one managed hosting and security"
+    ],
+    "limitations": [
+      "Difficult to export data or migrate away",
+      "Limited third-party app integrations",
+      "Lacks advanced SEO capabilities"
+    ],
+    "exampleSite": "https://www.pixar.com/"
+  },
+  {
+    "name": "Joomla",
+    "support": "Open Source (Supported by Open Source Matters)",
+    "technology": "PHP / MySQL or PostgreSQL",
+    "capabilities": [
+      "Built-in multilingual support out of the box",
+      "Strong user access controls and permissions",
+      "Flexible front-end editing"
+    ],
+    "limitations": [
+      "Smaller marketplace for extensions than WordPress",
+      "Interface can feel cluttered and dated"
+    ],
+    "exampleSite": "https://www.ikea.com/"
+  }
+]
