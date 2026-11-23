@@ -176,11 +176,11 @@
       color: #1f5c40;
     }
 
-    .grid-cell.link-anchor {
+    .grid-cell.start-anchor {
       background: #db2777;
       border-color: #6e1635;
       color: #ffffff;
-      animation: pulseLink 1.4s infinite;
+      animation: pulseAnchor 1.4s infinite;
     }
 
     .grid-cell.hint-glow {
@@ -196,7 +196,7 @@
       transform: scale(1.06);
     }
 
-    @keyframes pulseLink {
+    @keyframes pulseAnchor {
       0%, 100% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0.55); }
       50% { box-shadow: 0 0 0 8px rgba(219, 39, 119, 0); }
     }
@@ -296,16 +296,16 @@
   <main>
     <div class="game-card">
       <h1>Word Chain Crossword Search</h1>
-      <p class="subtitle">Read the crossword clue, find the word in the grid, and chain each new word from the last letter of the previous word!</p>
+      <p class="subtitle">Read the crossword clue, find the word in the grid, and chain each new word from the last letter of the previous word.</p>
 
       <!-- Rule Set (Requirement 1) -->
       <div class="rules-box">
         <h3>How to Play</h3>
         <ol>
           <li>Read the <strong>Crossword Clue</strong> and letter count below.</li>
-          <li><strong>Click and drag</strong> across letters in a straight line (up, down, left, or right) — or <strong>click the first letter, then click the last letter</strong> — to select your answer.</li>
+          <li><strong>Click and drag</strong> across letters in a straight line (up, down, left, or right), or <strong>click the first letter and then click the last letter</strong> to select your answer.</li>
           <li>After you find a word, its <strong>last letter glows dark pink</strong>. The next word in the chain starts directly on that glowing tile!</li>
-          <li>Earn <strong>+100 points</strong> per word (+25 streak bonus for no mistakes). Wrong guesses cost <strong>-15 points</strong>, and hints cost <strong>-25 points</strong>.</li>
+          <li>Earn <strong>+100 points</strong> per word (+25 streak bonus for no mistakes). Wrong guess <strong>-15 points</strong>, and hints <strong>-25 points</strong>. The timer begins when you select your first letter.</li>
         </ol>
       </div>
 
@@ -323,8 +323,8 @@
           <div class="stat-value" id="stat-score">0</div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">Chain Links</div>
-          <div class="stat-value" id="stat-links">0 / 6</div>
+          <div class="stat-label">Words Found</div>
+          <div class="stat-value" id="stat-words">0 / 6</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Accuracy</div>
@@ -345,7 +345,7 @@
 
       <!-- Active Crossword Clue -->
       <div class="clue-panel">
-        <div class="clue-meta" id="clue-meta">Link 1 of 6</div>
+        <div class="clue-meta" id="clue-meta">Word 1 of 6</div>
         <div class="clue-text" id="clue-text">Loading clue...</div>
         <div class="hint-text" id="hint-text"></div>
       </div>
@@ -354,7 +354,7 @@
       <div class="game-layout">
         <div class="word-grid" id="word-grid"></div>
 
-        <div class="feedback-bar" id="feedback-bar">Select letters on the grid to begin your chain!</div>
+        <div class="feedback-bar" id="feedback-bar">Click or drag across letters on the grid to start the timer!</div>
 
         <div class="controls">
           <button class="action-btn btn-hint" onclick="useHint()">Use Hint (-25 pts)</button>
@@ -441,6 +441,7 @@
     let hintsUsed = 0;
     let secondsElapsed = 0;
     let timerInterval = null;
+    let timerStarted = false;
     let roundFinished = false;
 
     function getWordCells(wordObj) {
@@ -468,13 +469,19 @@
       isDragging = false;
       roundFinished = false;
 
+      // Stop and reset timer (waits for first click/selection)
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerStarted = false;
+      secondsElapsed = 0;
+      document.getElementById("stat-time").textContent = "0:00";
+
       // Reset performance stats
       score = 0;
       streak = 0;
       attempts = 0;
       correctCount = 0;
       hintsUsed = 0;
-      secondsElapsed = 0;
 
       // Update active round button styling
       document.querySelectorAll(".round-btn").forEach((btn, i) => {
@@ -483,13 +490,12 @@
 
       document.getElementById("summary-box").style.display = "none";
       document.getElementById("hint-text").textContent = "";
-      setFeedback("Find Link #1 by dragging across letters or clicking the start and end tiles.", "");
+      setFeedback("Find Word #1 by dragging across letters or clicking the start and end tiles. Timer starts on your first click!", "");
 
       buildBoard();
       renderChainTrack();
       updateClue();
       updateStats();
-      startTimer();
     }
 
     function buildBoard() {
@@ -521,12 +527,12 @@
       gridEl.innerHTML = "";
 
       const round = ROUNDS[currentRoundIndex];
-      let activeLinkKey = null;
+      let activeStartKey = null;
       if (!roundFinished && currentWordIndex > 0) {
         const prevWord = round.words[currentWordIndex - 1];
         const prevCells = getWordCells(prevWord);
         const lastCell = prevCells[prevCells.length - 1];
-        activeLinkKey = cellKey(lastCell[0], lastCell[1]);
+        activeStartKey = cellKey(lastCell[0], lastCell[1]);
       }
 
       const selectedKeys = new Set(selectedCells.map(([r, c]) => cellKey(r, c)));
@@ -541,7 +547,7 @@
           cell.dataset.col = c;
 
           if (foundCells.has(key)) cell.classList.add("found");
-          if (key === activeLinkKey) cell.classList.add("link-anchor");
+          if (key === activeStartKey) cell.classList.add("start-anchor");
           if (hintCells.has(key) && !foundCells.has(key)) cell.classList.add("hint-glow");
           if (selectedKeys.has(key)) cell.classList.add("selecting");
 
@@ -573,6 +579,11 @@
 
     function handleCellDown(r, c) {
       if (roundFinished) return;
+
+      // Start the timer on the player's first tile click/selection
+      if (!timerStarted) {
+        startTimer();
+      }
 
       // Support two-click selection: click start tile, then click end tile
       if (anchorCell) {
@@ -667,7 +678,7 @@
         score = Math.max(0, score - 15);
         const pickedText = selectedCells.map(([r, c]) => boardLetters[r][c]).join("");
         selectedCells = [];
-        setFeedback(`"${pickedText}" isn't Link #${currentWordIndex + 1}. (-15 pts) Check the clue and try again!`, "bad");
+        setFeedback(`"${pickedText}" isn't Word #${currentWordIndex + 1}. (-15 pts) Check the clue and try again!`, "bad");
       }
 
       renderChainTrack();
@@ -684,7 +695,7 @@
       hintsUsed++;
       score = Math.max(0, score - 25);
 
-      // Reveal starting letter for Word 1, or 2nd letter for linked words
+      // Reveal starting letter for Word 1, or 2nd letter for chained words
       const revealIndex = currentWordIndex === 0 ? 0 : 1;
       hintCells.add(cellKey(cells[revealIndex][0], cells[revealIndex][1]));
 
@@ -695,7 +706,7 @@
       if (target.dir[0] === -1 && target.dir[1] === 0) dirLabel = "Up ↑";
 
       document.getElementById("hint-text").textContent =
-        `Hint: Look ${dirLabel} — yellow highlighted tile is part of the word!`;
+        `Hint: Look ${dirLabel}. The yellow highlighted tile is part of the word!`;
 
       updateStats();
       renderGrid();
@@ -716,7 +727,7 @@
           pill.classList.add("current");
           pill.textContent = i === 0 ? `${wObj.word[0]}${"_".repeat(wObj.word.length - 1)}` : `${wObj.word[0]}... (${wObj.word.length})`;
         } else {
-          pill.textContent = `Link ${i + 1}`;
+          pill.textContent = `Word ${i + 1}`;
         }
         trackEl.appendChild(pill);
 
@@ -732,13 +743,13 @@
     function updateClue() {
       const round = ROUNDS[currentRoundIndex];
       const target = round.words[currentWordIndex];
-      const linkNote =
+      const startNote =
         currentWordIndex === 0
           ? `Starts with "${target.word[0]}"`
           : `Starts on glowing "${target.word[0]}"`;
 
       document.getElementById("clue-meta").textContent =
-        `Link ${currentWordIndex + 1} of ${round.words.length} • ${linkNote} • ${target.word.length} Letters`;
+        `Word ${currentWordIndex + 1} of ${round.words.length} • ${startNote} • ${target.word.length} Letters`;
       document.getElementById("clue-text").textContent = target.clue;
     }
 
@@ -749,14 +760,15 @@
       const bestScore = localStorage.getItem(bestKey);
 
       document.getElementById("stat-score").textContent = score;
-      document.getElementById("stat-links").textContent = `${currentWordIndex} / ${round.words.length}`;
+      document.getElementById("stat-words").textContent = `${currentWordIndex} / ${round.words.length}`;
       document.getElementById("stat-accuracy").textContent = `${accuracy}%`;
       document.getElementById("stat-best").textContent = bestScore !== null ? bestScore : "--";
     }
 
     function startTimer() {
+      if (timerStarted) return;
+      timerStarted = true;
       clearInterval(timerInterval);
-      document.getElementById("stat-time").textContent = "0:00";
       timerInterval = setInterval(() => {
         secondsElapsed++;
         const mins = Math.floor(secondsElapsed / 60);
@@ -782,10 +794,10 @@
       }
 
       // Calculate performance rank
-      let rank = "Chain Apprentice";
+      let rank = "Word Apprentice";
       if (accuracy >= 90 && hintsUsed === 0) rank = "S-Rank: Word Chain Master!";
       else if (accuracy >= 75) rank = "A-Rank: Sharp Solver!";
-      else if (accuracy >= 50) rank = "B-Rank: Solid Linker!";
+      else if (accuracy >= 50) rank = "B-Rank: Solid Word Finder!";
 
       document.getElementById("clue-meta").textContent = `${round.title} Completed!`;
       document.getElementById("clue-text").textContent = "All 6 vocabulary words chained together!";
