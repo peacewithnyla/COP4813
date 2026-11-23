@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyla Webb | Assignment 13 - Word Chain Grid Game</title>
+
+  <link rel="stylesheet" href="theme.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0; line-height: 1.6;
+      background: linear-gradient(rgba(252, 227, 217, 0.65), rgba(235, 122, 141, 0.4)), url('hello kitty straw.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      max-width: 960px;
+      width: 95%;
+      margin: 2.5rem auto;
+      padding: 2rem;
+      border-radius: 18px;
+      border: 2px solid var(--primary-green, #89bfa3);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    h1, h2, h3 { color: var(--heading-dark, #6e1635); text-align: center; }
+    .subtitle { text-align: center; color: #555; margin-top: -10px; margin-bottom: 20px; }
+
+    /* Rules Box */
+    .rules-box {
+      background: #fdf2f8;
+      border: 2px solid #fbcfe8;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+    }
+    .rules-box h3 { margin: 0 0 8px 0; text-align: left; font-size: 1.05rem; color: #db2777; }
+    .rules-box ol { margin: 0; padding-left: 20px; color: #444; font-size: 0.92rem; }
+    .rules-box li { margin-bottom: 4px; }
+
+    /* Theme Selector Buttons */
+    .round-selector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .round-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 2px solid #89bfa3;
+      background: #ffffff;
+      color: #6e1635;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .round-btn:hover { background: #e8f5ee; }
+    .round-btn.active { background: #89bfa3; color: #ffffff; }
+
+    /* Performance Dashboard */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stat-box {
+      background: #ffffff;
+      border: 2px solid #fbcfe8;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-label { font-size: 0.78rem; text-transform: uppercase; color: #777; font-weight: bold; }
+    .stat-value { font-size: 1.3rem; font-weight: bold; color: #db2777; }
+
+    /* Visual Word Chain Track */
+    .chain-track {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 18px;
+      padding: 12px;
+      background: #f8fbf9;
+      border: 2px dashed #89bfa3;
+      border-radius: 12px;
+    }
+    .chain-pill {
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: 0.88rem;
+      background: #eeeeee;
+      color: #888;
+      border: 1px solid #ddd;
+    }
+    .chain-pill.solved { background: #89bfa3; color: #ffffff; border-color: #6fa98b; }
+    .chain-pill.current { background: #fdf2f8; color: #db2777; border: 2px solid #db2777; }
+    .chain-arrow { color: #db2777; font-weight: bold; }
+
+    /* Active Clue Banner */
+    .clue-panel {
+      background: #6e1635;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .clue-meta {
+      font-size: 0.85rem;
+      color: #fbcfe8;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .clue-text { font-size: 1.15rem; font-weight: 600; margin: 6px 0 0 0; }
+    .hint-text { font-size: 0.9rem; color: #fde68a; margin-top: 6px; min-height: 20px; }
+
+    /* Main Game Area */
+    .game-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* 8x8 Word Search Grid */
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 48px);
+      grid-template-rows: repeat(8, 48px);
+      gap: 6px;
+      background: #fdf2f8;
+      padding: 12px;
+      border-radius: 14px;
+      border: 2px solid #89bfa3;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .grid-cell {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #333;
+      background: #ffffff;
+      border: 2px solid #fbcfe8;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s, background-color 0.15s, border-color 0.15s;
+    }
+
+    .grid-cell:hover {
+      border-color: #db2777;
+      transform: scale(1.04);
+    }
+
+    .grid-cell.found {
+      background: #d8f3e5;
+      border-color: #89bfa3;
+      color: #1f5c40;
+    }
+
+    .grid-cell.link-anchor {
+      background: #db2777;
+      border-color: #6e1635;
+      color: #ffffff;
+      animation: pulseLink 1.4s infinite;
+    }
+
+    .grid-cell.hint-glow {
+      background: #fef08a;
+      border-color: #eab308;
+      color: #854d0e;
+    }
+
+    .grid-cell.selecting {
+      background: #f9a8d4;
+      border-color: #be185d;
+      color: #6e1635;
+      transform: scale(1.06);
+    }
+
+    @keyframes pulseLink {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0.55); }
+      50% { box-shadow: 0 0 0 8px rgba(219, 39, 119, 0); }
+    }
+
+    /* Controls & Feedback */
+    .feedback-bar {
+      min-height: 28px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: center;
+      color: #6e1635;
+    }
+    .feedback-bar.good { color: #2d7a55; }
+    .feedback-bar.bad { color: #c9302c; }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .action-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+    .action-btn:hover { opacity: 0.9; }
+    .btn-hint { background: #db2777; color: #ffffff; }
+    .btn-clear { background: #f3f4f6; color: #333; border: 1px solid #ccc; }
+    .btn-reset { background: #89bfa3; color: #ffffff; }
+
+    /* End-of-Round Summary Panel */
+    .summary-box {
+      display: none;
+      width: 100%;
+      margin-top: 10px;
+      padding: 20px;
+      background: #fdf2f8;
+      border: 2px solid #db2777;
+      border-radius: 14px;
+      text-align: center;
+    }
+    .summary-box h2 { margin-top: 0; color: #db2777; }
+    .rank-badge {
+      display: inline-block;
+      background: #6e1635;
+      color: #ffffff;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Nyla Webb</h1>
+    <p>Information Technology Portfolio</p>
+  </header>
+
+  <nav aria-label="Main Navigation">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">My Classes</a>
+        <ul><li><a href="index.html">COP4813</a></li></ul>
+      </li>
+      <li><a href="#">My Assignments</a>
+        <ul>
+          <li><a href="assignment1.html">Assignment 1</a></li>
+          <li><a href="index.html">Assignment 2</a></li>
+          <li><a href="assignment3.html">Assignment 3</a></li>
+          <li><a href="assignment4.html">Assignment 4</a></li>
+          <li><a href="assignment5.html">Assignment 5</a></li>
+          <li><a href="assignment6.html">Assignment 6</a></li>
+          <li><a href="assignment7.html">Assignment 7</a></li>
+          <li><a href="assignment9.html">Assignment 9</a></li>
+          <li><a href="assignment10.html">Assignment 10</a></li>
+          <li><a href="assignment11.html">Assignment 11</a></li>
+          <li><a href="assignment12.html">Assignment 12</a></li>
+          <li><a href="assignment13.html">Assignment 13</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Nyla's Sites</a>
+        <ul>
+          <li><a href="https://www.spotify.com" target="_blank">Spotify</a></li>
+          <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="game-card">
+      <h1>Word Chain Crossword Search</h1>
+      <p class="subtitle">Read the crossword clue, find the word in the grid, and chain each new word from the last letter of the previous word!</p>
+
+      <!-- Rule Set (Requirement 1) -->
+      <div class="rules-box">
+        <h3>How to Play</h3>
+        <ol>
+          <li>Read the <strong>Crossword Clue</strong> and letter count below.</li>
+          <li><strong>Click and drag</strong> across letters in a straight line (up, down, left, or right) — or <strong>click the first letter, then click the last letter</strong> — to select your answer.</li>
+          <li>After you find a word, its <strong>last letter glows dark pink</strong>. The next word in the chain starts directly on that glowing tile!</li>
+          <li>Earn <strong>+100 points</strong> per word (+25 streak bonus for no mistakes). Wrong guesses cost <strong>-15 points</strong>, and hints cost <strong>-25 points</strong>.</li>
+        </ol>
+      </div>
+
+      <!-- Theme / Level Picker -->
+      <div class="round-selector">
+        <button class="round-btn active" onclick="loadRound(0)">Round 1: Nature &amp; Earth</button>
+        <button class="round-btn" onclick="loadRound(1)">Round 2: Tech &amp; Coding</button>
+        <button class="round-btn" onclick="loadRound(2)">Round 3: Space &amp; Science</button>
+      </div>
+
+      <!-- Player Performance Metrics (Requirement 2) -->
+      <div class="stats-bar">
+        <div class="stat-box">
+          <div class="stat-label">Score</div>
+          <div class="stat-value" id="stat-score">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Chain Links</div>
+          <div class="stat-value" id="stat-links">0 / 6</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Accuracy</div>
+          <div class="stat-value" id="stat-accuracy">100%</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Time</div>
+          <div class="stat-value" id="stat-time">0:00</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Best Score</div>
+          <div class="stat-value" id="stat-best">--</div>
+        </div>
+      </div>
+
+      <!-- Chain Progress Display -->
+      <div class="chain-track" id="chain-track"></div>
+
+      <!-- Active Crossword Clue -->
+      <div class="clue-panel">
+        <div class="clue-meta" id="clue-meta">Link 1 of 6</div>
+        <div class="clue-text" id="clue-text">Loading clue...</div>
+        <div class="hint-text" id="hint-text"></div>
+      </div>
+
+      <!-- Grid & Controls -->
+      <div class="game-layout">
+        <div class="word-grid" id="word-grid"></div>
+
+        <div class="feedback-bar" id="feedback-bar">Select letters on the grid to begin your chain!</div>
+
+        <div class="controls">
+          <button class="action-btn btn-hint" onclick="useHint()">Use Hint (-25 pts)</button>
+          <button class="action-btn btn-clear" onclick="clearSelection()">Clear Selection</button>
+          <button class="action-btn btn-reset" onclick="loadRound(currentRoundIndex)">Restart Round</button>
+        </div>
+
+        <!-- Round Complete Summary -->
+        <div class="summary-box" id="summary-box">
+          <h2>Chain Complete!</h2>
+          <div class="rank-badge" id="summary-rank">Word Chain Master</div>
+          <p id="summary-details"></p>
+          <button class="action-btn btn-hint" id="next-round-btn" onclick="nextRound()">Play Next Round</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Nyla Webb. Built for COP4813.</p>
+  </footer>
+
+  <script>
+    // Verified 8x8 interlocking word-chain puzzles
+    const ROUNDS = [
+      {
+        id: "nature",
+        title: "Nature & Earth",
+        words: [
+          { word: "OCEAN", start: [0, 1], dir: [0, 1], clue: "A huge body of salt water covering most of Earth." },
+          { word: "NEST",  start: [0, 5], dir: [1, 0], clue: "A cozy structure built by birds to hold their eggs." },
+          { word: "TIGER", start: [3, 5], dir: [0, -1], clue: "A large striped wild cat native to Asia." },
+          { word: "ROOTS", start: [3, 1], dir: [1, 0], clue: "Underground plant parts that absorb water and nutrients." },
+          { word: "SOLAR", start: [7, 1], dir: [0, 1], clue: "Type of renewable energy powered by the Sun." },
+          { word: "RAIN",  start: [7, 5], dir: [-1, 0], clue: "Water droplets that fall from clouds to the ground." }
+        ]
+      },
+      {
+        id: "tech",
+        title: "Tech & Coding",
+        words: [
+          { word: "CODE",  start: [1, 4], dir: [0, 1], clue: "Written programming instructions executed by a computer." },
+          { word: "EMAIL", start: [1, 7], dir: [1, 0], clue: "Electronic messages sent over a computer network." },
+          { word: "LOGIC", start: [5, 7], dir: [0, -1], clue: "Structured reasoning used in if/else conditions." },
+          { word: "CLOUD", start: [5, 3], dir: [-1, 0], clue: "Remote internet servers used to store and run data." },
+          { word: "DATA",  start: [1, 3], dir: [0, -1], clue: "Raw facts and values collected for processing." },
+          { word: "ARRAY", start: [1, 0], dir: [1, 0], clue: "A data structure that stores an ordered list of items." }
+        ]
+      },
+      {
+        id: "space",
+        title: "Space & Science",
+        words: [
+          { word: "ORBIT", start: [4, 2], dir: [0, 1], clue: "The curved path a planet or moon follows around a star." },
+          { word: "TITAN", start: [4, 6], dir: [-1, 0], clue: "Saturn's largest moon, famous for its thick atmosphere." },
+          { word: "NOVA",  start: [0, 6], dir: [0, -1], clue: "A sudden bright explosion on the surface of a star." },
+          { word: "ATOM",  start: [0, 3], dir: [1, 0], clue: "The basic microscopic building block of matter." },
+          { word: "MARS",  start: [3, 3], dir: [0, -1], clue: "The fourth planet from the Sun, known as the Red Planet." },
+          { word: "SPACE", start: [3, 0], dir: [1, 0], clue: "The vast expanse beyond Earth's atmosphere." }
+        ]
+      }
+    ];
+
+    const GRID_SIZE = 8;
+    const FILLER_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let currentRoundIndex = 0;
+    let currentWordIndex = 0;
+    let boardLetters = [];
+    let foundCells = new Set();
+    let hintCells = new Set();
+
+    // Drag & two-click selection state
+    let isDragging = false;
+    let dragStart = null;
+    let anchorCell = null;
+    let selectedCells = [];
+
+    // Performance metrics state
+    let score = 0;
+    let streak = 0;
+    let attempts = 0;
+    let correctCount = 0;
+    let hintsUsed = 0;
+    let secondsElapsed = 0;
+    let timerInterval = null;
+    let roundFinished = false;
+
+    function getWordCells(wordObj) {
+      const cells = [];
+      for (let i = 0; i < wordObj.word.length; i++) {
+        cells.push([
+          wordObj.start[0] + wordObj.dir[0] * i,
+          wordObj.start[1] + wordObj.dir[1] * i
+        ]);
+      }
+      return cells;
+    }
+
+    function cellKey(r, c) {
+      return `${r},${c}`;
+    }
+
+    function loadRound(index) {
+      currentRoundIndex = index;
+      currentWordIndex = 0;
+      foundCells = new Set();
+      hintCells = new Set();
+      selectedCells = [];
+      anchorCell = null;
+      isDragging = false;
+      roundFinished = false;
+
+      // Reset performance stats
+      score = 0;
+      streak = 0;
+      attempts = 0;
+      correctCount = 0;
+      hintsUsed = 0;
+      secondsElapsed = 0;
+
+      // Update active round button styling
+      document.querySelectorAll(".round-btn").forEach((btn, i) => {
+        btn.classList.toggle("active", i === index);
+      });
+
+      document.getElementById("summary-box").style.display = "none";
+      document.getElementById("hint-text").textContent = "";
+      setFeedback("Find Link #1 by dragging across letters or clicking the start and end tiles.", "");
+
+      buildBoard();
+      renderChainTrack();
+      updateClue();
+      updateStats();
+      startTimer();
+    }
+
+    function buildBoard() {
+      const round = ROUNDS[currentRoundIndex];
+      boardLetters = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(""));
+
+      // Place chained words on the 8x8 grid
+      round.words.forEach(wObj => {
+        const cells = getWordCells(wObj);
+        cells.forEach(([r, c], idx) => {
+          boardLetters[r][c] = wObj.word[idx];
+        });
+      });
+
+      // Fill empty spaces with random letters
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          if (boardLetters[r][c] === "") {
+            boardLetters[r][c] = FILLER_LETTERS[Math.floor(Math.random() * FILLER_LETTERS.length)];
+          }
+        }
+      }
+
+      renderGrid();
+    }
+
+    function renderGrid() {
+      const gridEl = document.getElementById("word-grid");
+      gridEl.innerHTML = "";
+
+      const round = ROUNDS[currentRoundIndex];
+      let activeLinkKey = null;
+      if (!roundFinished && currentWordIndex > 0) {
+        const prevWord = round.words[currentWordIndex - 1];
+        const prevCells = getWordCells(prevWord);
+        const lastCell = prevCells[prevCells.length - 1];
+        activeLinkKey = cellKey(lastCell[0], lastCell[1]);
+      }
+
+      const selectedKeys = new Set(selectedCells.map(([r, c]) => cellKey(r, c)));
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          const cell = document.createElement("div");
+          const key = cellKey(r, c);
+          cell.className = "grid-cell";
+          cell.textContent = boardLetters[r][c];
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          if (foundCells.has(key)) cell.classList.add("found");
+          if (key === activeLinkKey) cell.classList.add("link-anchor");
+          if (hintCells.has(key) && !foundCells.has(key)) cell.classList.add("hint-glow");
+          if (selectedKeys.has(key)) cell.classList.add("selecting");
+
+          cell.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            handleCellDown(r, c);
+          });
+          cell.addEventListener("mouseenter", () => handleCellEnter(r, c));
+
+          gridEl.appendChild(cell);
+        }
+      }
+    }
+
+    function getLineCells(r1, c1, r2, c2) {
+      if (r1 !== r2 && c1 !== c2) return null; // Straight horizontal or vertical only
+      const cells = [];
+      const dr = Math.sign(r2 - r1);
+      const dc = Math.sign(c2 - c1);
+      let r = r1, c = c1;
+      while (true) {
+        cells.push([r, c]);
+        if (r === r2 && c === c2) break;
+        r += dr;
+        c += dc;
+      }
+      return cells;
+    }
+
+    function handleCellDown(r, c) {
+      if (roundFinished) return;
+
+      // Support two-click selection: click start tile, then click end tile
+      if (anchorCell) {
+        if (anchorCell[0] === r && anchorCell[1] === c) {
+          anchorCell = null;
+          selectedCells = [];
+          renderGrid();
+          return;
+        }
+        const line = getLineCells(anchorCell[0], anchorCell[1], r, c);
+        if (line && line.length > 1) {
+          selectedCells = line;
+          anchorCell = null;
+          renderGrid();
+          checkSelection();
+          return;
+        }
+      }
+
+      isDragging = true;
+      dragStart = [r, c];
+      selectedCells = [[r, c]];
+      renderGrid();
+    }
+
+    function handleCellEnter(r, c) {
+      if (!isDragging || !dragStart || roundFinished) return;
+      const line = getLineCells(dragStart[0], dragStart[1], r, c);
+      if (line) {
+        selectedCells = line;
+        renderGrid();
+      }
+    }
+
+    window.addEventListener("mouseup", () => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      if (selectedCells.length > 1) {
+        anchorCell = null;
+        checkSelection();
+      } else if (selectedCells.length === 1) {
+        // Keep single clicked cell as start anchor for two-click mode
+        anchorCell = selectedCells[0];
+        setFeedback("Start tile selected! Now click the end tile in the same row or column.", "");
+      }
+    });
+
+    function clearSelection() {
+      isDragging = false;
+      dragStart = null;
+      anchorCell = null;
+      selectedCells = [];
+      renderGrid();
+    }
+
+    function checkSelection() {
+      const round = ROUNDS[currentRoundIndex];
+      const target = round.words[currentWordIndex];
+      const targetCells = getWordCells(target);
+
+      attempts++;
+
+      // Compare selected coordinates to target coordinates (allows dragging forward or backward)
+      const targetKeySet = new Set(targetCells.map(([r, c]) => cellKey(r, c)));
+      const isMatch =
+        selectedCells.length === targetCells.length &&
+        selectedCells.every(([r, c]) => targetKeySet.has(cellKey(r, c)));
+
+      if (isMatch) {
+        correctCount++;
+        streak++;
+        const bonus = streak >= 2 ? 25 : 0;
+        score += 100 + bonus;
+
+        targetCells.forEach(([r, c]) => foundCells.add(cellKey(r, c)));
+        hintCells.clear();
+        selectedCells = [];
+        currentWordIndex++;
+
+        const bonusNote = bonus > 0 ? ` (+${bonus} streak bonus!)` : "";
+        setFeedback(`Nice! You found "${target.word}"!${bonusNote}`, "good");
+        document.getElementById("hint-text").textContent = "";
+
+        if (currentWordIndex >= round.words.length) {
+          finishRound();
+        } else {
+          updateClue();
+        }
+      } else {
+        streak = 0;
+        score = Math.max(0, score - 15);
+        const pickedText = selectedCells.map(([r, c]) => boardLetters[r][c]).join("");
+        selectedCells = [];
+        setFeedback(`"${pickedText}" isn't Link #${currentWordIndex + 1}. (-15 pts) Check the clue and try again!`, "bad");
+      }
+
+      renderChainTrack();
+      updateStats();
+      renderGrid();
+    }
+
+    function useHint() {
+      if (roundFinished) return;
+      const round = ROUNDS[currentRoundIndex];
+      const target = round.words[currentWordIndex];
+      const cells = getWordCells(target);
+
+      hintsUsed++;
+      score = Math.max(0, score - 25);
+
+      // Reveal starting letter for Word 1, or 2nd letter for linked words
+      const revealIndex = currentWordIndex === 0 ? 0 : 1;
+      hintCells.add(cellKey(cells[revealIndex][0], cells[revealIndex][1]));
+
+      let dirLabel = "";
+      if (target.dir[0] === 0 && target.dir[1] === 1) dirLabel = "Right →";
+      if (target.dir[0] === 0 && target.dir[1] === -1) dirLabel = "Left ←";
+      if (target.dir[0] === 1 && target.dir[1] === 0) dirLabel = "Down ↓";
+      if (target.dir[0] === -1 && target.dir[1] === 0) dirLabel = "Up ↑";
+
+      document.getElementById("hint-text").textContent =
+        `Hint: Look ${dirLabel} — yellow highlighted tile is part of the word!`;
+
+      updateStats();
+      renderGrid();
+    }
+
+    function renderChainTrack() {
+      const trackEl = document.getElementById("chain-track");
+      const round = ROUNDS[currentRoundIndex];
+      trackEl.innerHTML = "";
+
+      round.words.forEach((wObj, i) => {
+        const pill = document.createElement("span");
+        pill.className = "chain-pill";
+        if (i < currentWordIndex) {
+          pill.classList.add("solved");
+          pill.textContent = wObj.word;
+        } else if (i === currentWordIndex && !roundFinished) {
+          pill.classList.add("current");
+          pill.textContent = i === 0 ? `${wObj.word[0]}${"_".repeat(wObj.word.length - 1)}` : `${wObj.word[0]}... (${wObj.word.length})`;
+        } else {
+          pill.textContent = `Link ${i + 1}`;
+        }
+        trackEl.appendChild(pill);
+
+        if (i < round.words.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = "chain-arrow";
+          arrow.textContent = "→";
+          trackEl.appendChild(arrow);
+        }
+      });
+    }
+
+    function updateClue() {
+      const round = ROUNDS[currentRoundIndex];
+      const target = round.words[currentWordIndex];
+      const linkNote =
+        currentWordIndex === 0
+          ? `Starts with "${target.word[0]}"`
+          : `Starts on glowing "${target.word[0]}"`;
+
+      document.getElementById("clue-meta").textContent =
+        `Link ${currentWordIndex + 1} of ${round.words.length} • ${linkNote} • ${target.word.length} Letters`;
+      document.getElementById("clue-text").textContent = target.clue;
+    }
+
+    function updateStats() {
+      const round = ROUNDS[currentRoundIndex];
+      const accuracy = attempts === 0 ? 100 : Math.round((correctCount / attempts) * 100);
+      const bestKey = `wordChainBest_${round.id}`;
+      const bestScore = localStorage.getItem(bestKey);
+
+      document.getElementById("stat-score").textContent = score;
+      document.getElementById("stat-links").textContent = `${currentWordIndex} / ${round.words.length}`;
+      document.getElementById("stat-accuracy").textContent = `${accuracy}%`;
+      document.getElementById("stat-best").textContent = bestScore !== null ? bestScore : "--";
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      document.getElementById("stat-time").textContent = "0:00";
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const mins = Math.floor(secondsElapsed / 60);
+        const secs = secondsElapsed % 60;
+        document.getElementById("stat-time").textContent = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+      }, 1000);
+    }
+
+    function finishRound() {
+      roundFinished = true;
+      clearInterval(timerInterval);
+
+      const round = ROUNDS[currentRoundIndex];
+      const accuracy = Math.round((correctCount / attempts) * 100);
+      const timeBonus = Math.max(0, 120 - secondsElapsed);
+      score += timeBonus;
+
+      // Save personal best
+      const bestKey = `wordChainBest_${round.id}`;
+      const prevBest = parseInt(localStorage.getItem(bestKey) || "0", 10);
+      if (score > prevBest) {
+        localStorage.setItem(bestKey, score);
+      }
+
+      // Calculate performance rank
+      let rank = "Chain Apprentice";
+      if (accuracy >= 90 && hintsUsed === 0) rank = "S-Rank: Word Chain Master!";
+      else if (accuracy >= 75) rank = "A-Rank: Sharp Solver!";
+      else if (accuracy >= 50) rank = "B-Rank: Solid Linker!";
+
+      document.getElementById("clue-meta").textContent = `${round.title} Completed!`;
+      document.getElementById("clue-text").textContent = "All 6 vocabulary words chained together!";
+      document.getElementById("summary-rank").textContent = rank;
+      document.getElementById("summary-details").innerHTML =
+        `<strong>Final Score:</strong> ${score} (includes +${timeBonus} speed bonus)<br>` +
+        `<strong>Accuracy:</strong> ${accuracy}% &nbsp;|&nbsp; <strong>Time:</strong> ${document.getElementById("stat-time").textContent} &nbsp;|&nbsp; <strong>Hints Used:</strong> ${hintsUsed}`;
+
+      const nextBtn = document.getElementById("next-round-btn");
+      nextBtn.textContent = currentRoundIndex < ROUNDS.length - 1 ? "Play Next Round" : "Replay Round 1";
+
+      document.getElementById("summary-box").style.display = "block";
+      setFeedback("You completed the entire Word Chain!", "good");
+      updateStats();
+    }
+
+    function nextRound() {
+      const nextIdx = (currentRoundIndex + 1) % ROUNDS.length;
+      loadRound(nextIdx);
+    }
+
+    function setFeedback(msg, type) {
+      const el = document.getElementById("feedback-bar");
+      el.textContent = msg;
+      el.className = "feedback-bar" + (type ? ` ${type}` : "");
+    }
+
+    // Start Round 1 on load
+    loadRound(0);
+  </script>
+</body>
+</html>
